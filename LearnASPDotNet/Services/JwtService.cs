@@ -52,7 +52,7 @@ public class JwtService
         return new JwtSecurityTokenHandler().WriteToken(refreshToken);
     }
 
-    public void SetCookedToken(string key, string value)
+    public void SetCookedToken(HttpContext httpContext, string key, string value)
     {
         var cookieOptions = new CookieOptions
         {
@@ -64,7 +64,7 @@ public class JwtService
             SameSite = SameSiteMode.Strict, // chỉ gửi cookie đó khi request đến từ cùng một site
             Path = "/" // áp dụng cookie cho toàn bộ ứng dụng
         };
-        var httpContext = new HttpContextAccessor().HttpContext; // Lấy HttpContext hiện tại
+        //var httpContext = new HttpContextAccessor().HttpContext; // Lấy HttpContext hiện tại
         httpContext?.Response.Cookies.Append(key, value, cookieOptions); // Thiết lập cookie
     }
 

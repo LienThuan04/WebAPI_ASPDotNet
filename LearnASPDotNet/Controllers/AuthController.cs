@@ -69,7 +69,7 @@ namespace AuthApi.Controllers
             {
                 return Unauthorized("Generate token failed");
             }
-            this._jwtService.SetCookedToken(this.Refresh_Token, refreshToken);
+            this._jwtService.SetCookedToken(HttpContext, this.Refresh_Token, refreshToken);
             await this._sessionService.UpSertSessionAsync(refreshToken, user.Id);
             return Ok(new
             {
@@ -121,7 +121,7 @@ namespace AuthApi.Controllers
 
             await _sessionService.UpSertSessionAsync(newRefreshToken, userId);
             Response.Cookies.Delete(this.Refresh_Token);
-            this._jwtService.SetCookedToken(this.Refresh_Token, newRefreshToken);
+            this._jwtService.SetCookedToken(HttpContext ,this.Refresh_Token, newRefreshToken);
 
             return Ok(new
             {
