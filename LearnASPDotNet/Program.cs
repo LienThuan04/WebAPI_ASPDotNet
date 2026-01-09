@@ -1,10 +1,10 @@
-using AuthApi.Settings;
+using LearnASPDotNet.Settings;
 using MongoDB.Driver;
-using AuthApi.Middleware;
+using LearnASPDotNet.Middlewares;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Options;
-using Session.Services;
-using User.Service;
+using LearnASPDotNet.Sessions.Services;
+using LearnASPDotNet.Users.Services;
 using dotenv.net;
 
 
@@ -61,7 +61,7 @@ builder.Services.Configure<MongoDbSettings>(options =>
 // Register MongoDB client
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
-    var settings = serviceProvider.GetRequiredService<Microsoft.Extensions.Options.IOptions<MongoDbSettings>>().Value;
+    var settings = serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
     return new MongoClient(settings.ConnectionString);
 });
 //builder.Services.AddScoped<AuthApi.Services.UserService>(); // Register UserService
@@ -76,7 +76,6 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 builder.Services.AddJwtAuthentication();
 
 builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
-
 
 builder.Services.AddScoped<JwtService>(); // Register JwtService
 builder.Services.AddScoped<UserService>(); // Register UserService
@@ -98,6 +97,6 @@ app.UseAuthentication(); // Enable authentication middleware
 
 app.UseAuthorization(); // Enable authorization middleware
 
-app.MapControllers();
+app.MapControllers(); // Map controller routes
 
 app.Run();

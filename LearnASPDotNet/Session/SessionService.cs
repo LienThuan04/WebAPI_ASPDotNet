@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
-using Session;
+using LearnASPDotNet.Sessions.Models;
 
-namespace Session.Services
+namespace LearnASPDotNet.Sessions.Services
 {
     public class SessionService
     {

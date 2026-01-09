@@ -1,12 +1,10 @@
-﻿
-using Auth.Dtos;
-using User;
-using User.Service;
-using User.Dtos;
+﻿using LearnASPDotNet.Auths.Dtos;
+using LearnASPDotNet.Users.Models;
+using LearnASPDotNet.Users.Services;
+using LearnASPDotNet.Users.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Session.Services;
-using System.Security.Claims;
+using LearnASPDotNet.Sessions.Services;
 
 namespace Auth.Controllers
 {
@@ -32,7 +30,7 @@ namespace Auth.Controllers
             {
                 return Conflict("Username already exists.");
             }
-            var user = new User.User
+            var user = new User
             {
                 Username = createUserDto.Username,
                 Email = createUserDto.Email,

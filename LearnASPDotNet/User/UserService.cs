@@ -1,9 +1,9 @@
 ﻿using MongoDB.Driver;
 using Microsoft.Extensions.Options;
-using AuthApi.Settings;
-using User;
+using LearnASPDotNet.Settings;
+using LearnASPDotNet.Users.Models;
 
-namespace User.Service
+namespace LearnASPDotNet.Users.Services
 {
     public class UserService
     {
@@ -35,6 +35,11 @@ namespace User.Service
                 return true;
             }
             return false;
+        }
+
+        public async Task<List<User>> GetAllUserAsync() // Retrieve all users
+        {
+            return await _usersCollection.Find(_ => true).ToListAsync(); // Get all users in the collection with _ is a filter that matches all documents
         }
     }
 }

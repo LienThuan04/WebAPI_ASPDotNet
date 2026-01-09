@@ -1,8 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.ComponentModel.DataAnnotations;
 
-namespace Session
+namespace LearnASPDotNet.Sessions.Models
 {
     public class Session
     {

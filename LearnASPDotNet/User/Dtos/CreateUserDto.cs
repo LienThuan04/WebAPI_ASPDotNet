@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace User.Dtos
+namespace LearnASPDotNet.Users.Dtos
 {
     public class CreateUserDto
     {

@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace AuthApi.Middleware
+namespace LearnASPDotNet.Middlewares
 {
     public static class JwtAuthentication
     {

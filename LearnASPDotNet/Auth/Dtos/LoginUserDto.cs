@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Auth.Dtos
+namespace LearnASPDotNet.Auths.Dtos
 {
     public class LoginUserDto
     {

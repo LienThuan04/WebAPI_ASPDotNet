@@ -1,4 +1,4 @@
-﻿namespace AuthApi.Settings
+﻿namespace LearnASPDotNet.Settings
 {
     public class MongoDbSettings
     {

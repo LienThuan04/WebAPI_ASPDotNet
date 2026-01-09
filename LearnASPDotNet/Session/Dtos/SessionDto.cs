@@ -1,5 +1,5 @@
 ﻿
-namespace Session.Dtos
+namespace LearnASPDotNet.Sessions.Dtos
 {
     public class SessionDto
     {
