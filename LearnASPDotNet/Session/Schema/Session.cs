@@ -1,7 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
-namespace Session.Models
+namespace Session
 {
     public class Session
     {
@@ -9,7 +10,7 @@ namespace Session.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = null!;
 
-        [BsonElement("userId")]
+        [BsonElement("userId")] // ref to User.Id
         public string UserId { get; set; } = null!;
 
         [BsonElement("refreshToken")]

@@ -1,37 +1,35 @@
 ﻿using MongoDB.Driver;
-//using Session.Models;
+using Session;
 
 namespace Session.Services
 {
     public class SessionService
     {
-        private readonly IMongoCollection<Models.Session> _sessionsCollection;
-        private readonly IConfiguration _configuration;
+        private readonly IMongoCollection<Session> _sessionsCollection;
 
-        public SessionService(IMongoDatabase database, IConfiguration configuration) //IMongoDatabase được setup ở Program.cs  
+        public SessionService(IMongoDatabase database) //IMongoDatabase được setup ở Program.cs  
         {
-            _sessionsCollection = database.GetCollection<Models.Session>("Sessions");
-            _configuration = configuration;
+            _sessionsCollection = database.GetCollection<Session>("Sessions");
 
-            var indexKeys = Builders<Models.Session>.IndexKeys.Ascending(session => session.ExpiresAt);
+            var indexKeys = Builders<Session>.IndexKeys.Ascending(session => session.ExpiresAt);
             var indexOptions = new CreateIndexOptions
             {
                 ExpireAfter = TimeSpan.Zero // Xóa ngay khi tới ExpiresAt
             };
-            var indexModel = new CreateIndexModel<Models.Session>(indexKeys, indexOptions);
+            var indexModel = new CreateIndexModel<Session>(indexKeys, indexOptions);
             _sessionsCollection.Indexes.CreateOne(indexModel);
         }
 
         //todo: CRUD session  
-        public async Task<Models.Session> UpSertSessionAsync(string refreshToken, string userId)
+        public async Task<Session> UpSertSessionAsync(string refreshToken, string userId)
         {
-            var refreshExpiryConfig = this._configuration["Jwt:RefreshExpiryInDays"];
+            var refreshExpiryConfig = Environment.GetEnvironmentVariable("JWT_REFRESH_EXPIRE_DAYS");
             //var refreshExpiryConfig = 1.ToString(); // test expire one minute
             if (string.IsNullOrEmpty(refreshExpiryConfig))
             {
-                throw new Exception("JWT:RefreshExpiryInDays is not configured");
+                throw new Exception("JWT_REFRESH_EXPIRE_DAYS is not configured");
             }
-            var session = new Models.Session
+            var session = new Session
             {
                 UserId = userId,
                 RefreshToken = refreshToken,
@@ -40,12 +38,12 @@ namespace Session.Services
                 ) // Set expiration date for 7 days  
             };
 
-            var filter = Builders<Models.Session>.Filter.Eq(s => s.UserId, userId);
-            var update = Builders<Models.Session>.Update
+            var filter = Builders<Session>.Filter.Eq(s => s.UserId, userId);
+            var update = Builders<Session>.Update
                 .Set(s => s.RefreshToken, session.RefreshToken)
                 .Set(s => s.ExpiresAt, session.ExpiresAt);
 
-            var options = new FindOneAndUpdateOptions<Models.Session>
+            var options = new FindOneAndUpdateOptions<Session>
             {
                 ReturnDocument = ReturnDocument.After,
                 IsUpsert = true // If no document matches the filter, insert a new document
@@ -59,25 +57,25 @@ namespace Session.Services
             return updatedSession;
         }
 
-        public async Task<Models.Session?> GetSessionWithRefreshTokenAndUserId(string refreshToken, string userId)
+        public async Task<Session?> GetSessionWithRefreshTokenAndUserId(string refreshToken, string userId)
         {
             return await _sessionsCollection
                 .Find(session => session.RefreshToken == refreshToken && session.UserId == userId)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Models.Session?> UpdateSession(string userId, string newRefreshToken)
+        public async Task<Session?> UpdateSession(string userId, string newRefreshToken)
         {
-            var update = Builders<Models.Session>.Update
+            var update = Builders<Session>.Update
                 .Set(s => s.RefreshToken, newRefreshToken)
                 .Set(s => s.ExpiresAt, DateTime.UtcNow.AddDays(
-                    int.Parse(this._configuration["Jwt:RefreshExpiryInDays"]!)
+                    int.Parse(Environment.GetEnvironmentVariable("JWT_REFRESH_EXPIRE_DAYS")!)
                 )); // Update expiration date  
 
             var result = await _sessionsCollection.FindOneAndUpdateAsync(
                 s => s.UserId == userId, // Filter to find the session by userId  
                 update, // Update definition  
-                new FindOneAndUpdateOptions<Models.Session>
+                new FindOneAndUpdateOptions<Session>
                 {
                     ReturnDocument = ReturnDocument.After
                 }
@@ -87,9 +85,9 @@ namespace Session.Services
 
         public async Task<bool> DeleteSessionByRefreshToken(string refreshToken, string userId)
         {
-            var filter = Builders<Models.Session>.Filter.And(
-                Builders<Models.Session>.Filter.Eq(session => session.RefreshToken, refreshToken),
-                Builders<Models.Session>.Filter.Eq(session => session.UserId, userId)
+            var filter = Builders<Session>.Filter.And(
+                Builders<Session>.Filter.Eq(session => session.RefreshToken, refreshToken),
+                Builders<Session>.Filter.Eq(session => session.UserId, userId)
             );
 
             var result = await _sessionsCollection.DeleteOneAsync(filter);

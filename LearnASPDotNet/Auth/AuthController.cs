@@ -1,12 +1,14 @@
-﻿using AuthApi.Dtos;
-using AuthApi.Models;
-using AuthApi.Services;
+﻿
+using Auth.Dtos;
+using User;
+using User.Service;
+using User.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Session.Services;
 using System.Security.Claims;
 
-namespace AuthApi.Controllers
+namespace Auth.Controllers
 {
     [ApiController]
     [Route("api/auth")]
@@ -18,9 +20,9 @@ namespace AuthApi.Controllers
         private readonly string Refresh_Token = "refreshToken";
         public AuthController(UserService userService, JwtService jwtService, SessionService sessionService)
         {
-            this._userService = userService;
-            this._jwtService = jwtService;
-            this._sessionService = sessionService;
+            _userService = userService;
+            _jwtService = jwtService;
+            _sessionService = sessionService;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateUserDto createUserDto)
@@ -30,7 +32,7 @@ namespace AuthApi.Controllers
             {
                 return Conflict("Username already exists.");
             }
-            var user = new User
+            var user = new User.User
             {
                 Username = createUserDto.Username,
                 Email = createUserDto.Email,
@@ -38,7 +40,7 @@ namespace AuthApi.Controllers
                 address = createUserDto.Address,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password)
             };
-            Boolean isExistUserName = await _userService.CheckExistUserName(createUserDto.Username);
+            bool isExistUserName = await _userService.CheckExistUserName(createUserDto.Username);
             if (isExistUserName)
             {
                 return Conflict("Username already exists.");
@@ -69,64 +71,70 @@ namespace AuthApi.Controllers
             {
                 return Unauthorized("Generate token failed");
             }
-            this._jwtService.SetCookedToken(HttpContext, this.Refresh_Token, refreshToken);
-            await this._sessionService.UpSertSessionAsync(refreshToken, user.Id);
+            _jwtService.SetCookedToken(HttpContext, Refresh_Token, refreshToken);
+            await _sessionService.UpSertSessionAsync(refreshToken, user.Id);
             return Ok(new
             {
                 acesssToken = token
             });
         }
-
+        [AllowAnonymous]
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken()
         {
-            var refreshToken = Request.Cookies[this.Refresh_Token];
-
-            if (string.IsNullOrEmpty(refreshToken))
+            try
             {
-                return Unauthorized(new { message = "Missing refresh token" });
+                var refreshToken = Request.Cookies[Refresh_Token];
+
+                if (string.IsNullOrEmpty(refreshToken))
+                {
+                    return Unauthorized(new { message = "Missing refresh token" });
+                }
+                var principal = _jwtService.ValidateRefreshToken(refreshToken);
+                string userId = principal?.FindFirst("userId")?.Value ?? "";
+                // 1️⃣ Tìm session trong DB
+                var session = await _sessionService.GetSessionWithRefreshTokenAndUserId(refreshToken, userId); //lấy session từ DB bằng refreshToken và userId xem có hợp lệ k
+                if (session == null) // neu k có thì trả về lỗi
+                    return Unauthorized(new { message = "Your login session has expired." });
+
+                if (session.ExpiresAt < DateTime.UtcNow)
+                    return Unauthorized(new { message = "Refresh token expired" });
+
+                // 2️⃣ Lấy user từ DB
+                var user = await _userService.GetUserByIdAsync(userId);
+                if (user == null)
+                {
+                    return Unauthorized(new { message = "User not found" });
+                }
+                var payload = new JwtPayloadDto
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Phone = user.phone,
+                    Address = user.address
+                };
+
+                // 3️⃣ Tạo access token mới
+                var accessToken = _jwtService.GenerateToken(payload);
+
+                // 4️⃣ (OPTIONAL) rotate refresh token
+                var newRefreshToken = _jwtService.GenerateRefreshToken(
+                    user.Id
+                );
+                Response.Cookies.Delete(Refresh_Token);
+                await _sessionService.UpSertSessionAsync(newRefreshToken, userId);
+                _jwtService.SetCookedToken(HttpContext, Refresh_Token, newRefreshToken);
+
+                return Ok(new
+                {
+                    accessToken
+                });
             }
-            var principal = this._jwtService.ValidateRefreshToken(refreshToken);
-            string userId = principal?.FindFirst("userId")?.Value ?? "";
-            // 1️⃣ Tìm session trong DB
-            var session = await _sessionService.GetSessionWithRefreshTokenAndUserId(refreshToken, userId); //lấy session từ DB bằng refreshToken và userId xem có hợp lệ k
-            if (session == null) // neu k có thì trả về lỗi
-                return Unauthorized(new { message = "Your login session has expired." });
-
-            if (session.ExpiresAt < DateTime.UtcNow)
-                return Unauthorized(new { message = "Refresh token expired" });
-
-            // 2️⃣ Lấy user từ DB
-            var user = await _userService.GetUserByIdAsync(userId);
-            if (user == null)
+            catch (Exception ex)
             {
-                return Unauthorized(new { message = "User not found" });
+                return Unauthorized(ex.Message);
             }
-            var payload = new JwtPayloadDto
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Email = user.Email,
-                Phone = user.phone,
-                Address = user.address
-            };  
-
-            // 3️⃣ Tạo access token mới
-            var accessToken = _jwtService.GenerateToken(payload);
-
-            // 4️⃣ (OPTIONAL) rotate refresh token
-            var newRefreshToken = _jwtService.GenerateRefreshToken(
-                user.Id
-            );
-
-            await _sessionService.UpSertSessionAsync(newRefreshToken, userId);
-            Response.Cookies.Delete(this.Refresh_Token);
-            this._jwtService.SetCookedToken(HttpContext ,this.Refresh_Token, newRefreshToken);
-
-            return Ok(new
-            {
-                accessToken
-            });
         }
 
         [HttpGet("profile")]
@@ -158,15 +166,15 @@ namespace AuthApi.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            var refreshToken = Request.Cookies[this.Refresh_Token];
+            var refreshToken = Request.Cookies[Refresh_Token];
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return BadRequest("Missing refresh token or no login session yet.");
             }
-            var principal = this._jwtService.ValidateRefreshToken(refreshToken);
+            var principal = _jwtService.ValidateRefreshToken(refreshToken);
             string userId = principal?.FindFirst("userId")?.Value ?? "";
-            await this._sessionService.DeleteSessionByRefreshToken(refreshToken, userId);
-            Response.Cookies.Delete(this.Refresh_Token);
+            await _sessionService.DeleteSessionByRefreshToken(refreshToken, userId);
+            Response.Cookies.Delete(Refresh_Token);
             return Ok(new { message = "Logged out successfully" });
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace AuthApi.Dtos
+namespace User.Dtos
 {
     public class CreateUserDto
     {

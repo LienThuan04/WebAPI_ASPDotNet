@@ -1,9 +1,9 @@
-﻿using AuthApi.Models;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using AuthApi.Settings;
+using User;
 
-namespace AuthApi.Services
+namespace User.Service
 {
     public class UserService
     {
@@ -27,9 +27,9 @@ namespace AuthApi.Services
             await _usersCollection.InsertOneAsync(user);
         }
 
-        public async Task<Boolean> CheckExistUserName(string username) // Check if a username exists
+        public async Task<bool> CheckExistUserName(string username) // Check if a username exists
         {
-            var user =await _usersCollection.Find(u => u.Username == username).FirstOrDefaultAsync();
+            var user = await _usersCollection.Find(u => u.Username == username).FirstOrDefaultAsync();
             if (user != null)
             {
                 return true;

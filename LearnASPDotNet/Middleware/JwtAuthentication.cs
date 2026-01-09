@@ -6,7 +6,7 @@ namespace AuthApi.Middleware
 {
     public static class JwtAuthentication
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -17,10 +17,10 @@ namespace AuthApi.Middleware
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = configuration["Jwt:Issuer"],
-                        ValidAudience = configuration["Jwt:Audience"],
+                        ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER")!,
+                        ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(configuration["Jwt:Key"])
+                            Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!)
                         ),
                         ClockSkew = TimeSpan.Zero
                     };
@@ -41,7 +41,10 @@ namespace AuthApi.Middleware
                                 message = "Invalid token.";
                             }
                             var result = System.Text.Json.JsonSerializer.Serialize(new { error = message });
-                            return context.Response.WriteAsync(result);
+                            Console.WriteLine("OnAuthenticationFailed: " + result);
+                            context.HttpContext.Items["AuthError"] = message;
+                            return Task.CompletedTask; // End the task if authentication fails it should not proceed further
+
                         },
                         OnTokenValidated = context =>
                         {

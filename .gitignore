@@ -365,3 +365,4 @@ FodyWeavers.xsd
 # appsetiings.json file that can contain sensitive data
 appsettings.json
 /LearnASPDotNet/appsettings.json
+/LearnASPDotNet/.env

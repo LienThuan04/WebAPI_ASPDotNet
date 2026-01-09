@@ -3,11 +3,16 @@ using MongoDB.Driver;
 using AuthApi.Middleware;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Options;
-using AuthApi.Services;
 using Session.Services;
+using User.Service;
+using dotenv.net;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+//configure dotenv to load env variables from .env file
+DotEnv.Load();
 
 // Add services to the container.
 
@@ -48,9 +53,11 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Configure MongoDB settings
-builder.Services.Configure<MongoDbSettings>(
-            builder.Configuration.GetSection("MongoDbSettings")
-        );
+builder.Services.Configure<MongoDbSettings>(options =>
+{
+    options.ConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION")!;
+    options.DatabaseName = Environment.GetEnvironmentVariable("MONGO_DB")!;
+});
 // Register MongoDB client
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
@@ -66,7 +73,7 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 });
 
 // Add JWT authentication
-builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddJwtAuthentication();
 
 builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
 
