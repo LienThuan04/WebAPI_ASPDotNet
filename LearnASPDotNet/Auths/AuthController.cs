@@ -25,24 +25,19 @@ namespace Auth.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] CreateUserDto createUserDto)
         {
-            var existingUser = await _userService.GetUserByUsernameAsync(createUserDto.Username);
-            if (existingUser != null)
+            if (await this._userService.CheckExistEmailOrUsername(createUserDto.Username) || await this._userService.CheckExistEmailOrUsername(createUserDto.Email))
             {
-                return Conflict("Username already exists.");
+                return Conflict("Username or Email already exists.");
             }
             var user = new User
             {
                 Username = createUserDto.Username,
                 Email = createUserDto.Email,
-                phone = createUserDto.Phone,
-                address = createUserDto.Address,
+                phone = createUserDto.Phone ?? "",
+                address = createUserDto.Address ?? "",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password)
             };
-            bool isExistUserName = await _userService.CheckExistUserName(createUserDto.Username);
-            if (isExistUserName)
-            {
-                return Conflict("Username already exists.");
-            }
+            
             await _userService.CreateUserAsync(user);
             return CreatedAtAction(nameof(Register), new { id = user.Id }, null);
         }
@@ -76,8 +71,8 @@ namespace Auth.Controllers
                 acesssToken = token
             });
         }
-        [AllowAnonymous]
         [HttpPost("refresh-token")]
+        [AllowAnonymous]
         public async Task<IActionResult> RefreshToken()
         {
             try
@@ -120,8 +115,8 @@ namespace Auth.Controllers
                 var newRefreshToken = _jwtService.GenerateRefreshToken(
                     user.Id
                 );
-                Response.Cookies.Delete(Refresh_Token);
                 await _sessionService.UpSertSessionAsync(newRefreshToken, userId);
+                Response.Cookies.Delete(Refresh_Token);
                 _jwtService.SetCookedToken(HttpContext, Refresh_Token, newRefreshToken);
 
                 return Ok(new
@@ -145,7 +140,7 @@ namespace Auth.Controllers
             var email = User.FindFirst("userEmail")?.Value;
             var phone = User.FindFirst("phone")?.Value;
             var address = User.FindFirst("address")?.Value;
-            if (userId == null || username == null)
+            if (userId == null || username == null || email ==null)
             {
                 return Unauthorized("You are not logged in yet");
             }

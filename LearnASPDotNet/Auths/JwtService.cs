@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,6 +14,10 @@ public class JwtService
 
     public string GenerateToken(JwtPayloadDto Payload) // tạo access token với đầy đủ thông tin người dùng
     {
+        if (Payload.Id == null || Payload.Username ==null || Payload.Email == null)
+        {
+            throw new ArgumentNullException(nameof(Payload));
+        }
         var claims = new[]
         {
            new Claim("userId", Payload.Id),
@@ -36,6 +41,10 @@ public class JwtService
 
     public string GenerateRefreshToken(string userId) // tạo refresh token chỉ với userId
     {
+        if (string.IsNullOrEmpty(userId))
+        {
+            throw new ArgumentNullException(nameof(userId));
+        }
         var Payload = new[] {
             new Claim("userId", userId)
         };
@@ -54,6 +63,10 @@ public class JwtService
 
     public void SetCookedToken(HttpContext httpContext, string key, string value) // thiết lập cookie cho refresh token
     {
+        if(string.IsNullOrEmpty(value))
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true, // không cho phép truy cập cookie từ JavaScript
@@ -91,9 +104,9 @@ public class JwtService
             );
             return principal;
         }
-        catch
+        catch ( Exception ex )
         {
-            return null;
+            throw new SecurityTokenException("Invalid refresh token", ex);
         }
     }
 }

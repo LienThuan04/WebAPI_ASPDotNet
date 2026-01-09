@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LearnASPDotNet.Users.Services;
+using LearnASPDotNet.Users.Dtos;
 
 namespace LearnASPDotNet.Users.Controllers
 {
@@ -45,6 +46,33 @@ namespace LearnASPDotNet.Users.Controllers
                     return NotFound("User not found");
                 }
                 return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto updateUser)
+        {
+            try
+            {
+                var userExists = await _userService.GetUserByIdAsync(id);
+                if (userExists == null)
+                {
+                    return NotFound("User not found");
+                }
+                var UpdatedUser = await _userService.UpdateUserAsync(id, updateUser);
+                if (UpdatedUser == null)
+                {
+                    return BadRequest("Failed to update user");
+                }
+                // Implement update logic here
+                return Ok(new
+                {
+                    message = "User updated successfully",
+                    user = UpdatedUser
+                });
             }
             catch (Exception ex)
             {
