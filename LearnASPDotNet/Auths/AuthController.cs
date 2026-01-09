@@ -5,6 +5,7 @@ using LearnASPDotNet.Users.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LearnASPDotNet.Sessions.Services;
+using LearnASPDotNet.Sessions.Dtos;
 
 namespace Auth.Controllers
 {
@@ -65,7 +66,12 @@ namespace Auth.Controllers
                 return Unauthorized("Generate token failed");
             }
             _jwtService.SetCookedToken(HttpContext, Refresh_Token, refreshToken);
-            await _sessionService.UpSertSessionAsync(refreshToken, user.Id);
+            var sessionDto = new SessionDto
+            {
+                UserId = user.Id,
+                RefreshToken = refreshToken
+            };
+            await _sessionService.UpSertSessionAsync(sessionDto);
             return Ok(new
             {
                 acesssToken = token
@@ -115,7 +121,12 @@ namespace Auth.Controllers
                 var newRefreshToken = _jwtService.GenerateRefreshToken(
                     user.Id
                 );
-                await _sessionService.UpSertSessionAsync(newRefreshToken, userId);
+                var sessionDto = new SessionDto
+                {
+                    UserId = user.Id,
+                    RefreshToken = newRefreshToken
+                };
+                await _sessionService.UpSertSessionAsync(sessionDto);
                 Response.Cookies.Delete(Refresh_Token);
                 _jwtService.SetCookedToken(HttpContext, Refresh_Token, newRefreshToken);
 

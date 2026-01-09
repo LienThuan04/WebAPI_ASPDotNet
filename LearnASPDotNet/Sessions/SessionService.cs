@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
 using LearnASPDotNet.Sessions.Models;
+using LearnASPDotNet.Sessions.Dtos;
 
 namespace LearnASPDotNet.Sessions.Services
 {
@@ -21,7 +22,7 @@ namespace LearnASPDotNet.Sessions.Services
         }
 
         //todo: CRUD session  
-        public async Task<Session> UpSertSessionAsync(string refreshToken, string userId)
+        public async Task<Session> UpSertSessionAsync(SessionDto sessionDto)
         {
             var refreshExpiryConfig = Environment.GetEnvironmentVariable("JWT_REFRESH_EXPIRE_DAYS");
             //var refreshExpiryConfig = 1.ToString(); // test expire one minute
@@ -31,14 +32,14 @@ namespace LearnASPDotNet.Sessions.Services
             }
             var session = new Session
             {
-                UserId = userId,
-                RefreshToken = refreshToken,
+                UserId = sessionDto.UserId,
+                RefreshToken = sessionDto.RefreshToken,
                 ExpiresAt = DateTime.UtcNow.AddDays(
                     int.Parse(refreshExpiryConfig)
                 ) // Set expiration date for 7 days  
             };
 
-            var filter = Builders<Session>.Filter.Eq(s => s.UserId, userId);
+            var filter = Builders<Session>.Filter.Eq(s => s.UserId, sessionDto.UserId);
             var update = Builders<Session>.Update
                 .Set(s => s.RefreshToken, session.RefreshToken)
                 .Set(s => s.ExpiresAt, session.ExpiresAt);

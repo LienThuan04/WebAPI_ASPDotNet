@@ -1,11 +1,13 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace LearnASPDotNet.Sessions.Dtos
 {
     public class SessionDto
     {
+        [Required]
         public string UserId { get; set; } = null!;
-        public string RefreshToken { get; set; } = null!;
-        public DateTime ExpiresAt { get; set; } = DateTime.UtcNow.AddDays(int.Parse(Environment.GetEnvironmentVariable("JWT_REFRESH_EXPIRE_DAYS") ?? "7"));
 
+        [Required]
+        public string RefreshToken { get; set; } = null!;
     }
 }
