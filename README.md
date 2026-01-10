@@ -31,40 +31,81 @@ Theo GitHub Languages: C#
 ## Tiếng Việt
 
 ### Tổng quan
-Dự án Web API xây dựng bằng ASP.NET (C#) nhằm cung cấp các endpoint RESTful cho ứng dụng/dịch vụ phía client. Có thể mở rộng để tích hợp cơ sở dữ liệu, xác thực, logging, v.v.
-
-### Yêu cầu hệ thống
-- .NET SDK (phiên bản phù hợp với dự án)
-- IDE/Editor: Visual Studio, Rider hoặc VS Code (cài C# extension)
+Dự án Web API xây dựng bằng ASP.NET (C#) nhằm cung cấp các endpoint RESTful cho ứng dụng/dịch vụ phía client. Dự án con chính: `LearnASPDotNet`. Tích hợp xác thực (JWT), MongoDB và Swagger/OpenAPI.
 
 ### Hướng dẫn chạy nhanh
 ```bash
-# 1) Khôi phục gói
+cd LearnASPDotNet
 dotnet restore
-
-# 2) Biên dịch
 dotnet build
-
-# 3) Chạy ứng dụng
 dotnet run
 ```
 
 Sau khi khởi động, ứng dụng sẽ lắng nghe theo cấu hình trong `Properties/launchSettings.json`.  
 Nếu bật Swagger, truy cập `/swagger` trên địa chỉ localhost để xem và thử nghiệm API.
 
-### Cấu trúc thư mục (mẫu)
-Lưu ý: Đây là ví dụ để tham khảo/chuẩn hóa. Hãy cập nhật cho đúng với dự án thực tế.
+### Cấu trúc thư mục
 ```
 WebAPI_ASPDotNet/
-├─ Controllers/        # Các controller (endpoint)
-├─ Models/             # Model/DTO
-├─ Services/           # Tầng nghiệp vụ
-├─ Repositories/       # Truy cập dữ liệu
-├─ Program.cs          # Điểm khởi động
-├─ appsettings.json    # Cấu hình ứng dụng
-└─ Properties/
-   └─ launchSettings.json
+├─ .gitattributes
+├─ .gitignore
+├─ WebDotNetCore.sln
+├─ README.md
+└─ LearnASPDotNet/
+   ├─ Program.cs
+   ├─ LearnASPDotNet.csproj
+   ├─ LearnASPDotNet.http
+   ├─ .env.example
+   ├─ appsettings.json
+   ├─ appsettings.Development.json
+   ├─ Properties/
+   ├─ Auths/
+   ├─ Extensions/
+   ├─ Middlewares/
+   ├─ Sessions/
+   ├─ Settings/
+   └─ Users/
 ```
+
+### Giải thích thư mục chính
+- Root
+  - .gitattributes: Thiết lập thuộc tính Git cho repo.
+  - .gitignore: Khai báo các tệp/thư mục bỏ qua khi commit.
+  - WebDotNetCore.sln: Solution file cho Visual Studio.
+  - README.md: Tài liệu dự án.
+
+- LearnASPDotNet/ (dự án Web API)
+  - Program.cs: Khởi động ứng dụng; đăng ký Swagger, MongoDB, JWT, middleware, controllers.
+  - LearnASPDotNet.csproj: Khai báo `net8.0` và các package NuGet.
+  - LearnASPDotNet.http: Mẫu request HTTP để thử API.
+  - .env.example: Ví dụ biến môi trường cho `dotenv.net`.
+  - appsettings*.json: Cấu hình ứng dụng (chung và Development).
+  - Properties/: Thiết lập khởi chạy (launch settings) cho môi trường dev.
+
+  - Auths/: Xác thực và phát hành token
+    - AuthController.cs: Endpoint đăng ký/đăng nhập, phát hành JWT.
+    - JwtService.cs: Tạo/kiểm tra JWT.
+    - Dtos/: DTO cho request/response liên quan auth.
+
+  - Users/: Quản lý người dùng
+    - UserController.cs: Endpoint người dùng.
+    - UserService.cs: Nghiệp vụ người dùng.
+    - Models/, Dtos/: Khai báo model và DTO người dùng.
+
+  - Sessions/: Quản lý phiên
+    - SessionService.cs: Nghiệp vụ phiên (tạo/kiểm tra/hủy).
+    - Models/, Dtos/: Thực thể và DTO phiên.
+
+  - Middlewares/: Middleware tuỳ chỉnh
+    - MiddlewareException.cs: Bắt và chuẩn hóa lỗi (đặc biệt JWT).
+
+  - Extensions/: Tiện ích đăng ký dịch vụ (Dependency Injection)
+    - JwtAuthentication/: Cấu hình JWT (`AddJwtAuthentication()`).
+    - MongoDB/: Cấu hình MongoDB (`AddMongoDb()`).
+    - Swaggers/: Cấu hình Swagger/OpenAPI (`AddSwagger()`).
+
+  - Settings/: Cấu hình strongly-typed
+    - MongoDbSettings.cs: Thiết lập kết nối MongoDB.
 
 ### Tài liệu API
 - Swagger UI (nếu bật): truy cập `/swagger`
@@ -82,48 +123,54 @@ Chưa thiết lập.
 ## English
 
 ### Overview
-An ASP.NET (C#) Web API project providing RESTful endpoints for client applications/services. It can be extended with database integration, authentication, logging, etc.
-
-### Requirements
-- .NET SDK (version compatible with the project)
-- IDE/Editor: Visual Studio, Rider, or VS Code (with C# extension)
+ASP.NET (C#) Web API with sub-project `LearnASPDotNet`. Integrates JWT authentication, MongoDB, and Swagger/OpenAPI for API documentation.
 
 ### Quick Start
 ```bash
-# 1) Restore packages
+cd LearnASPDotNet
 dotnet restore
-
-# 2) Build
 dotnet build
-
-# 3) Run
 dotnet run
 ```
 
-After starting, the app listens per `Properties/launchSettings.json`.  
-If Swagger is enabled, navigate to `/swagger` on localhost to explore and test the API.
-
-### Folder Structure (example)
-Note: This is a sample structure. Adjust to match the actual project layout.
+### Folder Tree
 ```
 WebAPI_ASPDotNet/
-├─ Controllers/        # Controllers (endpoints)
-├─ Models/             # Models/DTOs
-├─ Services/           # Business logic layer
-├─ Repositories/       # Data access layer
-├─ Program.cs          # Entry point
-├─ appsettings.json    # App configuration
-└─ Properties/
-   └─ launchSettings.json
+├─ .gitattributes
+├─ .gitignore
+├─ WebDotNetCore.sln
+├─ README.md
+└─ LearnASPDotNet/
+   ├─ Program.cs
+   ├─ LearnASPDotNet.csproj
+   ├─ LearnASPDotNet.http
+   ├─ .env.example
+   ├─ appsettings.json
+   ├─ appsettings.Development.json
+   ├─ Properties/
+   ├─ Auths/
+   ├─ Extensions/
+   ├─ Middlewares/
+   ├─ Sessions/
+   ├─ Settings/
+   └─ Users/
 ```
+
+### Folder Explanations
+- Root: Git configs and solution.
+- LearnASPDotNet/: app bootstrap, project file, HTTP samples, env example, app settings, Properties.
+- Auths/: authentication (controller, JWT service, DTOs).
+- Users/: user management (controller, service, models/DTOs).
+- Sessions/: session lifecycle (service, models/DTOs).
+- Middlewares/: custom exception handling.
+- Extensions/: DI helpers for JWT, MongoDB, Swagger.
+- Settings/: strongly-typed settings (MongoDB).
 
 ### API Documentation
 - Swagger UI (if enabled): visit `/swagger`
-- Postman Collection/Docs (if any): add a link here
 
 ### Contributing
-- Fork the repo, create a feature branch, open a pull request describing your changes.
-- Follow the project's coding conventions and naming standards.
+- Fork, feature branch, pull request.
 
 ### License
 Not set yet.
