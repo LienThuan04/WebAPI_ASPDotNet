@@ -21,10 +21,10 @@ namespace LearnASPDotNet.Users.Models
         public string PasswordHash { get; set; } = null!;
 
         [BsonElement("phone")]
-        public string phone { get; set; } = null;
+        public string Phone { get; set; } = null;
 
         [BsonElement("address")]
-        public string address { get; set; } = null;
+        public string Address { get; set; } = null;
 
         [BsonElement("createdAt")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -2,9 +2,9 @@
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace LearnASPDotNet.Middlewares
+namespace LearnASPDotNet.Extensions.JwtAuthentication
 {
-    public static class JwtAuthentication
+    public static class JwtServiceExtensions
     {
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
         {

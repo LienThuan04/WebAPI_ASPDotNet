@@ -34,8 +34,8 @@ namespace Auth.Controllers
             {
                 Username = createUserDto.Username,
                 Email = createUserDto.Email,
-                phone = createUserDto.Phone ?? "",
-                address = createUserDto.Address ?? "",
+                Phone = createUserDto.Phone ?? "",
+                Address = createUserDto.Address ?? "",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password)
             };
             
@@ -56,8 +56,8 @@ namespace Auth.Controllers
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
-                Phone = user.phone,
-                Address = user.address
+                Phone = user.Phone,
+                Address = user.Address
             };
             var token = _jwtService.GenerateToken(payload);
             var refreshToken = _jwtService.GenerateRefreshToken(user.Id);
@@ -110,8 +110,8 @@ namespace Auth.Controllers
                     Id = user.Id,
                     Username = user.Username,
                     Email = user.Email,
-                    Phone = user.phone,
-                    Address = user.address
+                    Phone = user.Phone,
+                    Address = user.Address
                 };
 
                 // 3️⃣ Tạo access token mới
