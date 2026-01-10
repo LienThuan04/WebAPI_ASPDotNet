@@ -72,5 +72,12 @@ namespace LearnASPDotNet.Users.Services
                 ReturnDocument = ReturnDocument.After // Return the updated document
             }); // Apply the update  
         }
+
+        public async Task<User?> DeleteUserAsync(string id) // Delete a user by ID  
+        {
+            var filter = Builders<User>.Filter.Eq(user => user.Id, id); // Filter to find the user by ID
+            var deleteUser = await _usersCollection.FindOneAndDeleteAsync(filter); // Delete the user from the collection
+            return deleteUser;
+        }
     }
 }

@@ -1,12 +1,10 @@
 using LearnASPDotNet.Settings;
-using MongoDB.Driver;
 using LearnASPDotNet.Middlewares;
 using Microsoft.OpenApi.Models;
-using Microsoft.Extensions.Options;
 using LearnASPDotNet.Sessions.Services;
 using LearnASPDotNet.Users.Services;
 using dotenv.net;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,27 +50,10 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Configure MongoDB settings
-builder.Services.Configure<MongoDbSettings>(options =>
-{
-    options.ConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION")!;
-    options.DatabaseName = Environment.GetEnvironmentVariable("MONGO_DB")!;
-});
-// Register MongoDB client
-builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
-{
-    var settings = serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-    return new MongoClient(settings.ConnectionString);
-});
-//builder.Services.AddScoped<AuthApi.Services.UserService>(); // Register UserService
-builder.Services.AddSingleton<IMongoDatabase>(sp =>
-{
-    var client = sp.GetRequiredService<IMongoClient>();
-    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-    return client.GetDatabase(settings.DatabaseName);
-});
+// Configure MongoDB settings in Folder Settings/MongoDbSettings.cs
+builder.Services.AddMongoDb();
 
-// Add JWT authentication
+// Add JWT authentication in Folder Middlewares/JwtAuthentication.cs
 builder.Services.AddJwtAuthentication();
 
 builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
@@ -82,7 +63,7 @@ builder.Services.AddScoped<UserService>(); // Register UserService
 builder.Services.AddScoped<SessionService>();
 
 
-var app = builder.Build();
+var app = builder.Build(); // Build the application
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -90,6 +71,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<MiddlewareException>(); // Custom middleware to handle JWT errors
 
 app.UseHttpsRedirection();
 

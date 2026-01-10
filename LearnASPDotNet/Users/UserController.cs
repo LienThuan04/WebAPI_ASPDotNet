@@ -28,7 +28,8 @@ namespace LearnASPDotNet.Users.Controllers
                 }
                 return Ok(listUser);
 
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -72,6 +73,32 @@ namespace LearnASPDotNet.Users.Controllers
                 {
                     message = "User updated successfully",
                     user = UpdatedUser
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            try
+            {
+                var userExists = await _userService.GetUserByIdAsync(id);
+                if (userExists == null)
+                {
+                    return NotFound("User not found");
+                }
+                var data = await _userService.DeleteUserAsync(id);
+                if (data == null)
+                {
+                    throw new Exception("Failed to delete user");
+                }
+                return Ok(new
+                {
+                    message = "User deleted successfully"
                 });
             }
             catch (Exception ex)
