@@ -6,8 +6,7 @@ namespace LearnASPDotNet.Middlewares
     public class MiddlewareException
     {
         private readonly RequestDelegate _next;
-        private readonly Boolean isProduction = Convert.ToBoolean(Environment.GetEnvironmentVariable("PRODUCTION"));
-        private readonly Boolean isDevelopment = Convert.ToBoolean(Environment.GetEnvironmentVariable("DEVELOPMENT"));
+        private readonly string AspDotNet_Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!;
         public MiddlewareException(RequestDelegate next)
         {
             _next = next;
@@ -20,8 +19,7 @@ namespace LearnASPDotNet.Middlewares
             {
                 StatusCode = statusCode,
                 Message = exception.Message, //bắn lỗi ra message với đầu vào là exception 
-                StackTrace = this.isProduction == false &&
-                    this.isDevelopment == true ? exception.StackTrace : null // Thông tin ngăn xếp lỗi (chỉ nên hiển thị trong môi trường phát triển)
+                StackTrace = this.AspDotNet_Environment == "Development" ? exception.StackTrace : null // Thông tin ngăn xếp lỗi (chỉ nên hiển thị trong môi trường phát triển)
             };
             var payload = JsonSerializer.Serialize(response);
             context.Response.ContentType = "application/json";
