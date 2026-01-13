@@ -14,11 +14,6 @@ namespace LearnASPDotNet.Users.Services
             _usersCollection = database.GetCollection<User>("users"); // Get the "users" collection  
         }
 
-        public async Task<User?> GetUserByUsernameAsync(string username) // Retrieve a user by username use for login
-        {
-            return await _usersCollection.Find(user => user.Username == username).FirstOrDefaultAsync(); // Find the user in the collection  
-        }
-
         public async Task<UserDto?> GetUserByIdAsync(string id) // Retrieve a user by ID  
         {
             var User = await _usersCollection.Find(user => user.Id == id).FirstOrDefaultAsync(); // Find the user in the collection

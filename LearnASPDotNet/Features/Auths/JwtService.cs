@@ -5,7 +5,6 @@ using System.Text;
 
 public class JwtService
 {
-
     public JwtService() //contructor
     {
 
@@ -13,13 +12,13 @@ public class JwtService
 
     public string GenerateToken(JwtPayloadDto Payload) // tạo access token với đầy đủ thông tin người dùng
     {
-        if (Payload.Id == null || Payload.Username ==null || Payload.Email == null)
+        if (Payload.UserId == null || Payload.Username ==null || Payload.Email == null)
         {
             throw new ArgumentNullException(nameof(Payload));
         }
         var claims = new[]
         {
-           new Claim("userId", Payload.Id),
+           new Claim("userId", Payload.UserId),
            new Claim("userName", Payload.Username),
            new Claim("userEmail", Payload.Email),
            new Claim("phone", Payload?.Phone ?? ""),

@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace LearnASPDotNet.Auths.Dtos
+namespace LearnASPDotNet.Features.Auths.Dtos
 {
-    public class LoginUserDto
+    public class LoginRequest
     {
         [Required]
         [DefaultValue("User")]
-        public string Username { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty!;
+
         [Required]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
         [DefaultValue("123456")]

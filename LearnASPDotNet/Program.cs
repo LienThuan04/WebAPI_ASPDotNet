@@ -5,6 +5,7 @@ using LearnASPDotNet.Extensions.MongoDB;
 using LearnASPDotNet.Extensions.JwtAuthentication;
 using LearnASPDotNet.Extensions.Swaggers;
 using dotenv.net;
+using LearnASPDotNet.Features.Auths;
 
 // Create a builder for the web application
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +26,8 @@ builder.Services.AddJwtAuthentication();
 
 builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
 
-builder.Services.AddScoped<JwtService>(); // Register JwtService
+builder.Services.AddAuthFeature();
+
 builder.Services.AddScoped<UserService>(); // Register UserService
 builder.Services.AddScoped<SessionService>(); // Register SessionService
 
