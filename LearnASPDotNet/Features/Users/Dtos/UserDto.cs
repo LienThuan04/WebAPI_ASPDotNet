@@ -1,8 +1,8 @@
-﻿namespace LearnASPDotNet.Users.Dtos
+﻿namespace LearnASPDotNet.Features.Users.Dtos
 {
     public class UserDto
     {
-        public string Id { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? Phone { get; set; }

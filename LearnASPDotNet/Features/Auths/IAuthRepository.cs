@@ -1,4 +1,4 @@
-﻿using LearnASPDotNet.Users.Models;
+﻿using LearnASPDotNet.Features.Users.Models;
 
 namespace LearnASPDotNet.Features.Auths
 {

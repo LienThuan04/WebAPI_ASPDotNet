@@ -1,5 +1,6 @@
 ﻿using LearnASPDotNet.Features.Auths.Dtos;
-using LearnASPDotNet.Users.Models;
+using LearnASPDotNet.Features.Users.Models;
+using LearnASPDotNet.Features.Users.Dtos;
 
 namespace LearnASPDotNet.Features.Auths
 {
@@ -62,7 +63,9 @@ namespace LearnASPDotNet.Features.Auths
                     Username = user.Username,
                     Email = user.Email,
                     Phone = user.Phone,
-                    Address = user.Address
+                    Address = user.Address,
+                    CreatedAt = user.CreatedAt,
+                    UpdatedAt = user.UpdatedAt
                 },
                 RefreshToken = refreshToken
 
@@ -113,7 +116,9 @@ namespace LearnASPDotNet.Features.Auths
                     Username = user.Username,
                     Email = user.Email,
                     Phone = user.Phone,
-                    Address = user.Address
+                    Address = user.Address,
+                    CreatedAt = user.CreatedAt,
+                    UpdatedAt = user.UpdatedAt
                 }
             };
         }

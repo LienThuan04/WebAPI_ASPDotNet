@@ -1,4 +1,4 @@
-﻿using LearnASPDotNet.Users.Models;
+﻿using LearnASPDotNet.Features.Users.Models;
 using MongoDB.Driver;
 
 namespace LearnASPDotNet.Features.Auths

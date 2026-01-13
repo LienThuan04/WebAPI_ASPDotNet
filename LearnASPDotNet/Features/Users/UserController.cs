@@ -1,32 +1,57 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using LearnASPDotNet.Users.Services;
-using LearnASPDotNet.Users.Dtos;
+using LearnASPDotNet.Features.Users.Dtos;
 
-namespace LearnASPDotNet.Users.Controllers
+namespace LearnASPDotNet.Features.Users
 {
     [ApiController]
     [Route("user")]
     [Authorize]
     public class UserController : Controller
     {
-        private readonly UserService _userService;
-        public UserController(UserService userService)
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
-            this._userService = userService;
+            _userService = userService;
 
         }
-        [HttpGet()]
-        public async Task<IActionResult> GetUser()
+
+        [HttpPost()]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUser)
         {
             try
             {
-                var listUser = await _userService.GetAllUserAsync();
-                if (listUser == null || !listUser.Any())
+                if (await _userService.CheckExistEmailOrUsername(createUser.Email) || await _userService.CheckExistEmailOrUsername(createUser.Username))
+                {
+                    return BadRequest("Email or UserName is already in use by another user");
+                }
+                await _userService.CreateUserAsync(createUser);
+                return Ok(new
+                {
+                    Message = "User created successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet()]
+        public async Task<IActionResult> GetAllListUser()
+        {
+            try
+            {
+                var result = await _userService.FindAllUsersAsync();
+                if (result == null || !result.Any())
                 {
                     return NotFound("No users found");
                 }
-                return Ok(listUser);
+                return Ok(new
+                {
+                    Message = "Users retrieved successfully",
+                    Users = result
+                });
 
             }
             catch (Exception ex)
@@ -41,12 +66,16 @@ namespace LearnASPDotNet.Users.Controllers
         {
             try
             {
-                var user = await _userService.GetUserByIdAsync(id);
+                var user = await _userService.FindOneUserByIdAsync(id);
                 if (user == null)
                 {
                     return NotFound("User not found");
                 }
-                return Ok(user);
+                return Ok(new
+                {
+                    Message = "User retrieved successfully",
+                    User = user
+                });
             }
             catch (Exception ex)
             {
@@ -58,8 +87,12 @@ namespace LearnASPDotNet.Users.Controllers
         {
             try
             {
-                var userExists = await _userService.GetUserByIdAsync(id);
-                if (userExists == null)
+                if (await _userService.CheckExistEmailOrUsername(updateUser.Email))
+                {
+                    return BadRequest("Email is already in use by another user");
+                }
+                var result = await _userService.UpdateUserAsync(id, updateUser);
+                if (result == null)
                 {
                     return NotFound("User not found");
                 }
@@ -72,7 +105,7 @@ namespace LearnASPDotNet.Users.Controllers
                 return Ok(new
                 {
                     message = "User updated successfully",
-                    user = UpdatedUser
+                    user = result
                 });
             }
             catch (Exception ex)
@@ -86,7 +119,7 @@ namespace LearnASPDotNet.Users.Controllers
         {
             try
             {
-                var userExists = await _userService.GetUserByIdAsync(id);
+                var userExists = await _userService.FindOneUserByIdAsync(id);
                 if (userExists == null)
                 {
                     return NotFound("User not found");

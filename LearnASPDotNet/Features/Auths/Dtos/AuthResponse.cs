@@ -1,4 +1,6 @@
-﻿namespace LearnASPDotNet.Features.Auths.Dtos
+﻿using LearnASPDotNet.Features.Users.Dtos;
+
+namespace LearnASPDotNet.Features.Auths.Dtos
 {
     public class AuthResponse
     {

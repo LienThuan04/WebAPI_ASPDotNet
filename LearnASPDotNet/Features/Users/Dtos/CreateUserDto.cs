@@ -1,21 +1,23 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace LearnASPDotNet.Users.Dtos
+
+namespace LearnASPDotNet.Features.Users.Dtos
 {
     public class CreateUserDto
     {
         [Required]
-        [DefaultValue("User")]
+        [DefaultValue("Test")]
         public string Username { get; set; } = string.Empty;
+
         [Required]
         [EmailAddress]
-        [DefaultValue("user@gmail.com")]
+        [DefaultValue("Test@gmail.com")]
         public string Email { get; set; } = string.Empty;
-        [Required]
+ 
         [DefaultValue("123456")]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
-        public string Password { get; set; } = string.Empty;
+        //[MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
+        public string? Password { get; set; } = string.Empty;
 
         [DefaultValue("0999999999")]
         [MaxLength(10, ErrorMessage = "Phone number cannot exceed 10 characters.")]

@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace LearnASPDotNet.Users.Models
+namespace LearnASPDotNet.Features.Users.Models
 {
     public class User
     {

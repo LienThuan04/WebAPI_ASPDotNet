@@ -1,11 +1,11 @@
 using LearnASPDotNet.Middlewares;
 using LearnASPDotNet.Sessions.Services;
-using LearnASPDotNet.Users.Services;
 using LearnASPDotNet.Extensions.MongoDB;
 using LearnASPDotNet.Extensions.JwtAuthentication;
 using LearnASPDotNet.Extensions.Swaggers;
 using dotenv.net;
 using LearnASPDotNet.Features.Auths;
+using LearnASPDotNet.Features.Users;
 
 // Create a builder for the web application
 var builder = WebApplication.CreateBuilder(args);
@@ -27,8 +27,8 @@ builder.Services.AddJwtAuthentication();
 builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
 
 builder.Services.AddAuthFeature();
+builder.Services.AddUserFeature(); // Register User feature services
 
-builder.Services.AddScoped<UserService>(); // Register UserService
 builder.Services.AddScoped<SessionService>(); // Register SessionService
 
 

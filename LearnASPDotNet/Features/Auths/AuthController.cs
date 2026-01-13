@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LearnASPDotNet.Sessions.Services;
 using LearnASPDotNet.Sessions.Dtos;
+using LearnASPDotNet.Features.Users;
 
 namespace LearnASPDotNet.Features.Auths
 {
@@ -11,11 +12,13 @@ namespace LearnASPDotNet.Features.Auths
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IUserService _userService;
         private readonly JwtService _jwtService;
         private readonly SessionService _sessionService;
         private readonly string _refreshToken = "refreshToken";
-        public AuthController(IAuthService authService, JwtService jwtService, SessionService sessionService)
+        public AuthController(IAuthService authService, JwtService jwtService, SessionService sessionService, IUserService userService)
         {
+            _userService = userService;
             _authService = authService;
             _jwtService = jwtService;
             _sessionService = sessionService;
@@ -24,6 +27,10 @@ namespace LearnASPDotNet.Features.Auths
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
+            if(await _userService.CheckExistEmailOrUsername(request.Email) || await _userService.CheckExistEmailOrUsername(request.Username))
+            {
+                return BadRequest("Email or UserName is already in use by another user");
+            }
             var result = await _authService.RegisterAsync(request);
             return Ok(result);
         }
@@ -82,25 +89,11 @@ namespace LearnASPDotNet.Features.Auths
         [Authorize]
         public IActionResult GetProfile()
         {
-            //var userId = User.FindFirst("userId")?.Value;
-            //var username = User.FindFirst("userName")?.Value;
-            //var email = User.FindFirst("userEmail")?.Value;
-            //var phone = User.FindFirst("phone")?.Value;
-            //var address = User.FindFirst("address")?.Value;
-            //if (userId == null || username == null || email == null)
-            //{
-            //    return Unauthorized("You are not logged in yet");
-            //}
-            //var profile = new JwtPayloadDto
-            //{
-            //    UserId = userId,
-            //    Username = username,
-            //    Email = email,
-            //    Phone = phone,
-            //    Address = address
-            //};
-            //return Ok(profile);
             var profile = HttpContext.GetCurrentUser();
+            if (profile == null)
+            {
+                return Unauthorized("User not found or User no login");
+            }
             return Ok(profile);
         }
 

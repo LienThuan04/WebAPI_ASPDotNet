@@ -1,8 +1,7 @@
-﻿
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace LearnASPDotNet.Users.Dtos
+namespace LearnASPDotNet.Features.Users.Dtos
 {
     public class UpdateUserDto
     {
