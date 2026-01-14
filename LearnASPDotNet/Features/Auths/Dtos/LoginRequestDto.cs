@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LearnASPDotNet.Features.Auths.Dtos
 {
-    public class LoginRequest
+    public class LoginRequestDto
     {
         [Required]
         [DefaultValue("User")]

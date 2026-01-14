@@ -15,7 +15,7 @@ namespace LearnASPDotNet.Features.Auths
             _jwtService = jwtService;
         }
 
-        public async Task<AuthResponse.RegisterResponse> RegisterAsync(RegisterRequest request)
+        public async Task<AuthResponseDto.RegisterResponse> RegisterAsync(RegisterRequestDto request)
         {
             var user = new User
             {
@@ -27,13 +27,13 @@ namespace LearnASPDotNet.Features.Auths
             };
             await _authRepository.CreateUserAsync(user);
 
-            return new AuthResponse.RegisterResponse
+            return new AuthResponseDto.RegisterResponse
             {
                 Message = "User registered successfully."
             };
         }
         
-        public async Task<AuthResponse.LoginResponse> LoginAsync(LoginRequest request)
+        public async Task<AuthResponseDto.LoginResponse> LoginAsync(LoginRequestDto request)
         {
             var user = await _authRepository.GetUserByUsernameAsync(request.Username);
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
@@ -54,10 +54,10 @@ namespace LearnASPDotNet.Features.Auths
             {
                 throw new Exception("Failed to generate tokens.");
             }
-            return new AuthResponse.LoginResponse
+            return new AuthResponseDto.LoginResponse
             {
                 AccessToken = accessToken,
-                User = new UserResponse
+                User = new UserResponseDto
                 {
                     UserId = user.Id,
                     Username = user.Username,
@@ -72,7 +72,7 @@ namespace LearnASPDotNet.Features.Auths
             };
         }
 
-        public async Task<AuthResponse.RefreshTokenResponse> RefreshTokenAsync(string refreshToken)
+        public async Task<AuthResponseDto.RefreshTokenResponse> RefreshTokenAsync(string refreshToken)
         {
             var principal = _jwtService.ValidateRefreshToken(refreshToken);
             var userId = principal?.FindFirst("userId")?.Value ?? "";
@@ -106,11 +106,11 @@ namespace LearnASPDotNet.Features.Auths
                 throw new Exception("Failed to generate tokens.");
             }
 
-            return new AuthResponse.RefreshTokenResponse
+            return new AuthResponseDto.RefreshTokenResponse
             {
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
-                User = new UserResponse
+                User = new UserResponseDto
                 {
                     UserId = user.Id,
                     Username = user.Username,
@@ -123,7 +123,7 @@ namespace LearnASPDotNet.Features.Auths
             };
         }
 
-        public async Task<AuthResponse.LogoutResponse> LogoutAsync(string refreshToken)
+        public async Task<AuthResponseDto.LogoutResponse> LogoutAsync(string refreshToken)
         {
             // In a real application, you would invalidate the refresh token in the database or cache.
             var principal = _jwtService.ValidateRefreshToken(refreshToken);
@@ -133,7 +133,7 @@ namespace LearnASPDotNet.Features.Auths
                 throw new Exception("Invalid refresh token.");
             }
 
-            return new AuthResponse.LogoutResponse
+            return new AuthResponseDto.LogoutResponse
             {
                 Message = "User logged out successfully.",
                 UserId = userId

@@ -5,10 +5,10 @@ namespace LearnASPDotNet.Features.Users
     public interface IUserService
     {
         Task CreateUserAsync(CreateUserDto createUserDto);
-        Task<UserResponse> FindOneUserByIdAsync(string id);
-        Task<List<UserResponse>> FindAllUsersAsync();
-        Task<UserResponse> UpdateUserAsync(string userId, UpdateUserDto updateUserDto);
-        Task<UserResponse> DeleteUserAsync(string userId);
+        Task<UserResponseDto> FindOneUserByIdAsync(string id);
+        Task<List<UserResponseDto>> FindAllUsersAsync();
+        Task<UserResponseDto> UpdateUserAsync(string userId, UpdateUserDto updateUserDto);
+        Task<UserResponseDto> DeleteUserAsync(string userId);
         Task<bool> CheckExistEmailOrUsername(string emailOrUsername);
 
     }

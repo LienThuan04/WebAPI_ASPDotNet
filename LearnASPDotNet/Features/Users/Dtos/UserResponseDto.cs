@@ -1,6 +1,6 @@
 ﻿namespace LearnASPDotNet.Features.Users.Dtos
 {
-    public class UserResponse
+    public class UserResponseDto
     {
         public string UserId { get; set; } = string.Empty!;
         public string Email { get; set; } = string.Empty!;

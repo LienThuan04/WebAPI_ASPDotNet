@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LearnASPDotNet.Sessions.Dtos
+namespace LearnASPDotNet.Features.Sessions.Dtos
 {
-    public class SessionDto
+    public class CreateSessionDto
     {
         [Required]
         public string UserId { get; set; } = null!;

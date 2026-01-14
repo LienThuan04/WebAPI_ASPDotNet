@@ -4,9 +4,9 @@ namespace LearnASPDotNet.Features.Auths
 {
     public interface IAuthService
     {
-        Task<AuthResponse.LoginResponse> LoginAsync(LoginRequest loginRequest);
-        Task<AuthResponse.RegisterResponse> RegisterAsync(RegisterRequest registerRequest);
-        Task<AuthResponse.RefreshTokenResponse> RefreshTokenAsync(string refreshToken);
-        Task<AuthResponse.LogoutResponse> LogoutAsync(string refreshToken);
+        Task<AuthResponseDto.LoginResponse> LoginAsync(LoginRequestDto loginRequest);
+        Task<AuthResponseDto.RegisterResponse> RegisterAsync(RegisterRequestDto registerRequest);
+        Task<AuthResponseDto.RefreshTokenResponse> RefreshTokenAsync(string refreshToken);
+        Task<AuthResponseDto.LogoutResponse> LogoutAsync(string refreshToken);
     }
 }

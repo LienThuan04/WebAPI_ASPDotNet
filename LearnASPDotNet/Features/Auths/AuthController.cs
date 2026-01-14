@@ -1,9 +1,9 @@
 ﻿using LearnASPDotNet.Features.Auths.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using LearnASPDotNet.Sessions.Services;
-using LearnASPDotNet.Sessions.Dtos;
 using LearnASPDotNet.Features.Users;
+using LearnASPDotNet.Features.Sessions;
+using LearnASPDotNet.Features.Sessions.Dtos;
 
 namespace LearnASPDotNet.Features.Auths
 {
@@ -14,9 +14,9 @@ namespace LearnASPDotNet.Features.Auths
         private readonly IAuthService _authService;
         private readonly IUserService _userService;
         private readonly JwtService _jwtService;
-        private readonly SessionService _sessionService;
+        private readonly ISessionService _sessionService;
         private readonly string _refreshToken = "refreshToken";
-        public AuthController(IAuthService authService, JwtService jwtService, SessionService sessionService, IUserService userService)
+        public AuthController(IAuthService authService, JwtService jwtService, ISessionService sessionService, IUserService userService)
         {
             _userService = userService;
             _authService = authService;
@@ -25,7 +25,7 @@ namespace LearnASPDotNet.Features.Auths
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
             if(await _userService.CheckExistEmailOrUsername(request.Email) || await _userService.CheckExistEmailOrUsername(request.Username))
             {
@@ -36,11 +36,11 @@ namespace LearnASPDotNet.Features.Auths
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
             var result = await _authService.LoginAsync(request);
             _jwtService.SetCookedToken(HttpContext, _refreshToken, result.RefreshToken);
-            var sessionDto = new SessionDto
+            var sessionDto = new CreateSessionDto
             {
                 UserId = result.User.UserId,
                 RefreshToken = result.RefreshToken
@@ -70,7 +70,7 @@ namespace LearnASPDotNet.Features.Auths
                 // Cập nhật cookie refresh token
                 Response.Cookies.Delete(_refreshToken);
                 _jwtService.SetCookedToken(HttpContext, _refreshToken, result.RefreshToken);
-                var sessionDto = new SessionDto
+                var sessionDto = new CreateSessionDto
                 {
                     UserId = result.User.UserId,
                     RefreshToken = result.RefreshToken
@@ -108,7 +108,16 @@ namespace LearnASPDotNet.Features.Auths
             }
             var result = await _authService.LogoutAsync(refreshToken);
             Response.Cookies.Delete(_refreshToken);
-            await _sessionService.DeleteSessionByRefreshToken(refreshToken, result.UserId);
+            SessionRequestDto sessionRequestDto = new SessionRequestDto
+            {
+                RefreshToken = refreshToken,
+                UserId = result.UserId
+            };
+            var resultDelete = await _sessionService.DeleteSessionByRefreshToken(sessionRequestDto);
+            if (!resultDelete)
+            {
+                return BadRequest("Logout failed. Session not found.");
+            }
             return Ok(new { result.Message});
         }
     }

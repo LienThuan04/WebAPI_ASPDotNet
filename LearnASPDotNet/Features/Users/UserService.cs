@@ -32,10 +32,10 @@ namespace LearnASPDotNet.Features.Users
 
         }
 
-        public async Task<UserResponse?> FindOneUserByIdAsync(string id)
+        public async Task<UserResponseDto?> FindOneUserByIdAsync(string id)
         {
             var User = await _userRepository.GetUserByIdAsync(id);
-            return User == null ? null : new UserResponse
+            return User == null ? null : new UserResponseDto
             {
                 UserId = User.Id,
                 Username = User.Username,
@@ -47,10 +47,10 @@ namespace LearnASPDotNet.Features.Users
             };
         }
 
-        public async Task<List<UserResponse>> FindAllUsersAsync()
+        public async Task<List<UserResponseDto>> FindAllUsersAsync()
         {
             var users = await _userRepository.GetAllUsersAsync();
-            return users.Select(user => new UserResponse
+            return users.Select(user => new UserResponseDto
             {
                 UserId = user.Id,
                 Username = user.Username,
@@ -62,14 +62,14 @@ namespace LearnASPDotNet.Features.Users
             }).ToList();
         }
 
-        public async Task<UserResponse?> UpdateUserAsync(string UserId, UpdateUserDto updateUser)
+        public async Task<UserResponseDto?> UpdateUserAsync(string UserId, UpdateUserDto updateUser)
         {
             var user = await _userRepository.UpdateUserAsync(UserId, updateUser);
             if (user == null)
             {
                 return null;
             }
-            return new UserResponse
+            return new UserResponseDto
             {
                 UserId = user.Id,
                 Username = user.Username,
@@ -86,14 +86,14 @@ namespace LearnASPDotNet.Features.Users
             return await _userRepository.CheckExistEmailOrUsername(emailOrUsername);
         }
 
-        public async Task<UserResponse?> DeleteUserAsync(string id)
+        public async Task<UserResponseDto?> DeleteUserAsync(string id)
         {
             var user = await _userRepository.DeleteUserAsync(id);
             if (user == null)
             {
                 return null;
             }
-            return new UserResponse
+            return new UserResponseDto
             {
                 UserId = user.Id,
                 Username = user.Username,

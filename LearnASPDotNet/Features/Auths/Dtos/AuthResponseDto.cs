@@ -2,12 +2,12 @@
 
 namespace LearnASPDotNet.Features.Auths.Dtos
 {
-    public class AuthResponse
+    public class AuthResponseDto
     {
         public class LoginResponse
         {
             public string AccessToken { get; set; } = null!;
-            public UserResponse User { get; set; } = null!;
+            public UserResponseDto User { get; set; } = null!;
 
             public string RefreshToken { get; set; } = null!;
         }
@@ -20,7 +20,7 @@ namespace LearnASPDotNet.Features.Auths.Dtos
         public class RefreshTokenResponse
         {
             public string AccessToken { get; set; } = null!;
-            public UserResponse User { get; set; } = null!;
+            public UserResponseDto User { get; set; } = null!;
             public string RefreshToken { get; set; } = null!;
         }
 
