@@ -37,7 +37,11 @@ var app = builder.Build(); // Build the application
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "LearnASPDotNet API V1"); //Document title 
+        options.ConfigObject.PersistAuthorization = true; // Persist authorization data
+    });
 }
 
 app.UseMiddleware<MiddlewareException>(); // Custom middleware to handle JWT errors
