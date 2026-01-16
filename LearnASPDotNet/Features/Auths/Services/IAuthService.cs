@@ -1,6 +1,6 @@
 ﻿using LearnASPDotNet.Features.Auths.Dtos;
 
-namespace LearnASPDotNet.Features.Auths
+namespace LearnASPDotNet.Features.Auths.Services
 {
     public interface IAuthService
     {

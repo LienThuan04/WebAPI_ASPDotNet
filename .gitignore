@@ -366,3 +366,5 @@ FodyWeavers.xsd
 appsettings.json
 /LearnASPDotNet/appsettings.json
 /LearnASPDotNet/.env
+/LearnASPDotNet/Settings/firebase-adminsdk.json
+/LearnASPDotNet/firebase-adminsdk.json

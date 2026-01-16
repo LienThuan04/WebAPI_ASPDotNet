@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LearnASPDotNet.Features.Users.Dtos;
+using LearnASPDotNet.Features.Users.Services;
 
 namespace LearnASPDotNet.Features.Users
 {

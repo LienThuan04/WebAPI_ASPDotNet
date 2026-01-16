@@ -1,4 +1,7 @@
-﻿namespace LearnASPDotNet.Features.Sessions
+﻿using LearnASPDotNet.Features.Sessions.Repositories;
+using LearnASPDotNet.Features.Sessions.Services;
+
+namespace LearnASPDotNet.Features.Sessions
 {
     public static class SessionDependecy
     {

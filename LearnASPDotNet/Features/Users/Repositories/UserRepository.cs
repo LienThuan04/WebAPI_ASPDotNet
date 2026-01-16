@@ -2,7 +2,7 @@
 using LearnASPDotNet.Features.Users.Models;
 using MongoDB.Driver;
 
-namespace LearnASPDotNet.Features.Users
+namespace LearnASPDotNet.Features.Users.Repositories
 {
     public class UserRepository : IUserRepository
     {

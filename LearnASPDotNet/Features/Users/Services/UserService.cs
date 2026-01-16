@@ -1,7 +1,8 @@
 ﻿using LearnASPDotNet.Features.Users.Models;
 using LearnASPDotNet.Features.Users.Dtos;
+using LearnASPDotNet.Features.Users.Repositories;
 
-namespace LearnASPDotNet.Features.Users
+namespace LearnASPDotNet.Features.Users.Services
 {
     public class UserService : IUserService
     {

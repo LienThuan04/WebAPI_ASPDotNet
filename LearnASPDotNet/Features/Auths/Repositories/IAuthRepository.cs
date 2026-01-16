@@ -1,6 +1,6 @@
 ﻿using LearnASPDotNet.Features.Users.Models;
 
-namespace LearnASPDotNet.Features.Auths
+namespace LearnASPDotNet.Features.Auths.Repositories
 {
     public interface IAuthRepository
     {

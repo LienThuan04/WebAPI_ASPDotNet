@@ -1,9 +1,10 @@
 ﻿using LearnASPDotNet.Features.Auths.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using LearnASPDotNet.Features.Users;
-using LearnASPDotNet.Features.Sessions;
 using LearnASPDotNet.Features.Sessions.Dtos;
+using LearnASPDotNet.Features.Users.Services;
+using LearnASPDotNet.Features.Sessions.Services;
+using LearnASPDotNet.Features.Auths.Services;
 
 namespace LearnASPDotNet.Features.Auths
 {

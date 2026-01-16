@@ -1,8 +1,9 @@
 ﻿using LearnASPDotNet.Features.Auths.Dtos;
 using LearnASPDotNet.Features.Users.Models;
 using LearnASPDotNet.Features.Users.Dtos;
+using LearnASPDotNet.Features.Auths.Repositories;
 
-namespace LearnASPDotNet.Features.Auths
+namespace LearnASPDotNet.Features.Auths.Services
 {
     public class AuthService : IAuthService
     {
@@ -32,7 +33,7 @@ namespace LearnASPDotNet.Features.Auths
                 Message = "User registered successfully."
             };
         }
-        
+
         public async Task<AuthResponseDto.LoginResponse> LoginAsync(LoginRequestDto request)
         {
             var user = await _authRepository.GetUserByUsernameAsync(request.Username);
@@ -85,7 +86,7 @@ namespace LearnASPDotNet.Features.Auths
             {
                 throw new Exception("User not found.");
             }
-            if(user.Id != userId)
+            if (user.Id != userId)
             {
                 throw new Exception("Invalid refresh token for the user.");
             }

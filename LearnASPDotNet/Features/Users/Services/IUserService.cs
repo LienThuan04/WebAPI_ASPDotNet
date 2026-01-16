@@ -1,6 +1,6 @@
 ﻿using LearnASPDotNet.Features.Users.Dtos;
 
-namespace LearnASPDotNet.Features.Users
+namespace LearnASPDotNet.Features.Users.Services
 {
     public interface IUserService
     {

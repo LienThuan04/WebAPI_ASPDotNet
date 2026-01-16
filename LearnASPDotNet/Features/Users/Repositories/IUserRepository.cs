@@ -1,7 +1,7 @@
 ﻿using LearnASPDotNet.Features.Users.Dtos;
 using LearnASPDotNet.Features.Users.Models;
 
-namespace LearnASPDotNet.Features.Users
+namespace LearnASPDotNet.Features.Users.Repositories
 {
     public interface IUserRepository
     {

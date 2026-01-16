@@ -1,7 +1,8 @@
 ﻿using LearnASPDotNet.Features.Sessions.Dtos;
 using LearnASPDotNet.Features.Sessions.Models;
+using LearnASPDotNet.Features.Sessions.Repositories;
 
-namespace LearnASPDotNet.Features.Sessions
+namespace LearnASPDotNet.Features.Sessions.Services
 {
     public class SessionService : ISessionService
     {

@@ -2,7 +2,7 @@
 using LearnASPDotNet.Features.Sessions.Dtos;
 using LearnASPDotNet.Features.Sessions.Models;
 
-namespace LearnASPDotNet.Features.Sessions
+namespace LearnASPDotNet.Features.Sessions.Repositories
 {
     public class SessionRepository : ISessionRepository
     {

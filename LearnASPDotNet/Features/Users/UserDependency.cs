@@ -1,4 +1,7 @@
-﻿namespace LearnASPDotNet.Features.Users
+﻿using LearnASPDotNet.Features.Users.Repositories;
+using LearnASPDotNet.Features.Users.Services;
+
+namespace LearnASPDotNet.Features.Users
 {
     public static class UserDependency
     {

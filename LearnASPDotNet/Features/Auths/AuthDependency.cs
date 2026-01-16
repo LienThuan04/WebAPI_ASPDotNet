@@ -1,4 +1,7 @@
-﻿namespace LearnASPDotNet.Features.Auths
+﻿using LearnASPDotNet.Features.Auths.Repositories;
+using LearnASPDotNet.Features.Auths.Services;
+
+namespace LearnASPDotNet.Features.Auths
 {
     public static class AuthDependency
     {

@@ -1,11 +1,11 @@
 ﻿using LearnASPDotNet.Features.Users.Models;
 using MongoDB.Driver;
 
-namespace LearnASPDotNet.Features.Auths
+namespace LearnASPDotNet.Features.Auths.Repositories
 {
     public class AuthRepository : IAuthRepository
     {
-        private  readonly IMongoCollection<User> _usersCollection;
+        private readonly IMongoCollection<User> _usersCollection;
 
         public AuthRepository(IMongoDatabase database)
         {
