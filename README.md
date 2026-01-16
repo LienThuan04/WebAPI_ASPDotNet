@@ -47,54 +47,87 @@ Nếu bật Swagger, truy cập `/swagger` trên địa chỉ localhost để xe
 ### Cấu trúc thư mục (cập nhật theo commit mới nhất)
 ```
 WebAPI_ASPDotNet/
-├─ .gitattributes
-├─ .gitignore
-├─ WebDotNetCore.sln
-├─ README.md
-└─ LearnASPDotNet/
-   ├─ Program.cs
-   ├─ LearnASPDotNet.csproj
-   ├─ LearnASPDotNet.http
-   ├─ .env.example
-   ├─ appsettings.json
-   ├─ appsettings.Development.json
-   ├─ Properties/
-   │  ├─ launchSettings.json
-   │  ├─ serviceDependencies.json
-   │  └─ serviceDependencies.local.json
-   ├─ Extensions/
-   │  ├─ JwtAuthentication/
-   │  │  └─ JwtServiceExtensions.cs
-   │  ├─ MongoDB/
-   │  │  └─ MongoDbServiceExtensions.cs
-   │  └─ Swaggers/
-   │     └─ SwaggerServiceExtensions.cs
-   ├─ Middlewares/
-   │  └─ MiddlewareException.cs
-   ├─ Settings/
-   │  └─ MongoDbSettings.cs
-   └─ Features/
-      ├─ Auths/
-      │  ├─ AuthController.cs
-      │  ├─ AuthDependency.cs
-      │  ├─ AuthRepository.cs
-      │  ├─ AuthService.cs
-      │  ├─ IAuthRepository.cs
-      │  ├─ IAuthService.cs
-      │  ├─ JwtService.cs
-      │  └─ Dtos/
-      ├─ Users/
-      │  ├─ UserController.cs
-      │  ├─ UserDependency.cs
-      │  ├─ UserRepository.cs
-      │  ├─ UserService.cs
-      │  ├─ IUserRepository.cs
-      │  ├─ IUserService.cs
-      │  ├─ Models/
-      │  └─ Dtos/
-      └─ Sessions/
-         ├─ Models/
-         └─ Dtos/
+├── 📄 README.md                          # Tài liệu dự án
+├── 📄 WebDotNetCore. sln                  # Solution file
+├── 📄 . gitignore                         
+├── 📄 . gitattributes
+│
+└── 📁 LearnASPDotNet/                    # Main project
+    │
+    ├── 📄 Program.cs                     # Entry point & DI configuration
+    ├── 📄 LearnASPDotNet.csproj          # Project file
+    ├── 📄 LearnASPDotNet.http            # HTTP request samples
+    ├── 📄 . env.example                   # Environment variables template
+    ├── 📄 appsettings. json               # App configuration
+    ├── 📄 appsettings.Development.json   # Development config
+    │
+    ├── 📁 Properties/
+    │   ├── launchSettings.json           # Launch profiles
+    │   ├── serviceDependencies.json
+    │   └── serviceDependencies.local.json
+    │
+    ├── 📁 Extensions/                    # Service extensions
+    │   ├── 📁 JwtAuthentication/
+    │   │   └── JwtServiceExtensions.cs   # JWT config
+    │   ├── 📁 MongoDB/
+    │   │   └── MongoDbServiceExtensions. cs # MongoDB config
+    │   └── 📁 Swaggers/
+    │       └── SwaggerServiceExtensions.cs # Swagger config
+    │
+    ├── 📁 Middlewares/
+    │   └── MiddlewareException.cs        # Global exception handler
+    │
+    ├── 📁 Settings/
+    │   └── MongoDbSettings.cs            # MongoDB settings model
+    │
+    └── 📁 Features/                      # Feature-based organization
+        │
+        ├── 📁 Auths/                     # Authentication feature
+        │   ├── AuthController.cs         # Auth endpoints
+        │   ├── AuthDependency.cs         # DI registration
+        │   ├── 📁 Services/
+        │   │   ├── AuthService.cs        # Business logic
+        │   │   ├── IAuthService.cs       # Service interface
+        │   │   └── JwtService.cs         # JWT token handling
+        │   ├── 📁 Repositories/
+        │   │   ├── AuthRepository.cs     # Data access
+        │   │   └── IAuthRepository.cs    # Repository interface
+        │   └── 📁 Dtos/
+        │       ├── LoginRequestDto.cs
+        │       ├── RegisterRequestDto.cs
+        │       ├── AuthResponseDto.cs
+        │       └── JwtPayloadDto.cs
+        │
+        ├── 📁 Users/                     # User management feature
+        │   ├── UserController.cs         # User endpoints
+        │   ├── UserDependency.cs         # DI registration
+        │   ├── 📁 Services/
+        │   │   ├── UserService.cs        # Business logic
+        │   │   └── IUserService.cs       # Service interface
+        │   ├── 📁 Repositories/
+        │   │   ├── UserRepository.cs     # Data access
+        │   │   └── IUserRepository.cs    # Repository interface
+        │   ├── 📁 Models/
+        │   │   └── User.cs               # User entity
+        │   └── 📁 Dtos/
+        │       ├── UserDto.cs
+        │       ├── UserResponseDto.cs
+        │       ├── CreateUserDto.cs
+        │       └── UpdateUserDto.cs
+        │
+        └── 📁 Sessions/                  # Session management feature
+            ├── SessionDependency.cs      # DI registration
+            ├── 📁 Services/
+            │   ├── SessionService.cs     # Business logic
+            │   └── ISessionService. cs    # Service interface
+            ├── 📁 Repositories/
+            │   ├── SessionRepository.cs  # Data access
+            │   └── ISessionRepository.cs # Repository interface
+            ├── 📁 Models/
+            │   └── Session.cs            # Session entity (with TTL)
+            └── 📁 Dtos/
+                ├── CreateSessionDto.cs
+                └── SessionRequestDto.cs
 ```
 
 ### Giải thích thư mục chính
@@ -142,54 +175,87 @@ dotnet run
 ### Folder Tree (updated to latest commit)
 ```
 WebAPI_ASPDotNet/
-├─ .gitattributes
-├─ .gitignore
-├─ WebDotNetCore.sln
-├─ README.md
-└─ LearnASPDotNet/
-   ├─ Program.cs
-   ├─ LearnASPDotNet.csproj
-   ├─ LearnASPDotNet.http
-   ├─ .env.example
-   ├─ appsettings.json
-   ├─ appsettings.Development.json
-   ├─ Properties/
-   │  ├─ launchSettings.json
-   │  ├─ serviceDependencies.json
-   │  └─ serviceDependencies.local.json
-   ├─ Extensions/
-   │  ├─ JwtAuthentication/
-   │  │  └─ JwtServiceExtensions.cs
-   │  ├─ MongoDB/
-   │  │  └─ MongoDbServiceExtensions.cs
-   │  └─ Swaggers/
-   │     └─ SwaggerServiceExtensions.cs
-   ├─ Middlewares/
-   │  └─ MiddlewareException.cs
-   ├─ Settings/
-   │  └─ MongoDbSettings.cs
-   └─ Features/
-      ├─ Auths/
-      │  ├─ AuthController.cs
-      │  ├─ AuthDependency.cs
-      │  ├─ AuthRepository.cs
-      │  ├─ AuthService.cs
-      │  ├─ IAuthRepository.cs
-      │  ├─ IAuthService.cs
-      │  ├─ JwtService.cs
-      │  └─ Dtos/
-      ├─ Users/
-      │  ├─ UserController.cs
-      │  ├─ UserDependency.cs
-      │  ├─ UserRepository.cs
-      │  ├─ UserService.cs
-      │  ├─ IUserRepository.cs
-      │  ├─ IUserService.cs
-      │  ├─ Models/
-      │  └─ Dtos/
-      └─ Sessions/
-         ├─ Models/
-         └─ Dtos/
+├── 📄 README.md                          # Tài liệu dự án
+├── 📄 WebDotNetCore. sln                  # Solution file
+├── 📄 . gitignore                         
+├── 📄 . gitattributes
+│
+└── 📁 LearnASPDotNet/                    # Main project
+    │
+    ├── 📄 Program.cs                     # Entry point & DI configuration
+    ├── 📄 LearnASPDotNet.csproj          # Project file
+    ├── 📄 LearnASPDotNet.http            # HTTP request samples
+    ├── 📄 . env.example                   # Environment variables template
+    ├── 📄 appsettings. json               # App configuration
+    ├── 📄 appsettings.Development.json   # Development config
+    │
+    ├── 📁 Properties/
+    │   ├── launchSettings.json           # Launch profiles
+    │   ├── serviceDependencies.json
+    │   └── serviceDependencies.local.json
+    │
+    ├── 📁 Extensions/                    # Service extensions
+    │   ├── 📁 JwtAuthentication/
+    │   │   └── JwtServiceExtensions.cs   # JWT config
+    │   ├── 📁 MongoDB/
+    │   │   └── MongoDbServiceExtensions. cs # MongoDB config
+    │   └── 📁 Swaggers/
+    │       └── SwaggerServiceExtensions.cs # Swagger config
+    │
+    ├── 📁 Middlewares/
+    │   └── MiddlewareException.cs        # Global exception handler
+    │
+    ├── 📁 Settings/
+    │   └── MongoDbSettings.cs            # MongoDB settings model
+    │
+    └── 📁 Features/                      # Feature-based organization
+        │
+        ├── 📁 Auths/                     # Authentication feature
+        │   ├── AuthController.cs         # Auth endpoints
+        │   ├── AuthDependency.cs         # DI registration
+        │   ├── 📁 Services/
+        │   │   ├── AuthService.cs        # Business logic
+        │   │   ├── IAuthService.cs       # Service interface
+        │   │   └── JwtService.cs         # JWT token handling
+        │   ├── 📁 Repositories/
+        │   │   ├── AuthRepository.cs     # Data access
+        │   │   └── IAuthRepository.cs    # Repository interface
+        │   └── 📁 Dtos/
+        │       ├── LoginRequestDto.cs
+        │       ├── RegisterRequestDto.cs
+        │       ├── AuthResponseDto.cs
+        │       └── JwtPayloadDto.cs
+        │
+        ├── 📁 Users/                     # User management feature
+        │   ├── UserController.cs         # User endpoints
+        │   ├── UserDependency.cs         # DI registration
+        │   ├── 📁 Services/
+        │   │   ├── UserService.cs        # Business logic
+        │   │   └── IUserService.cs       # Service interface
+        │   ├── 📁 Repositories/
+        │   │   ├── UserRepository.cs     # Data access
+        │   │   └── IUserRepository.cs    # Repository interface
+        │   ├── 📁 Models/
+        │   │   └── User.cs               # User entity
+        │   └── 📁 Dtos/
+        │       ├── UserDto.cs
+        │       ├── UserResponseDto.cs
+        │       ├── CreateUserDto.cs
+        │       └── UpdateUserDto.cs
+        │
+        └── 📁 Sessions/                  # Session management feature
+            ├── SessionDependency.cs      # DI registration
+            ├── 📁 Services/
+            │   ├── SessionService.cs     # Business logic
+            │   └── ISessionService. cs    # Service interface
+            ├── 📁 Repositories/
+            │   ├── SessionRepository.cs  # Data access
+            │   └── ISessionRepository.cs # Repository interface
+            ├── 📁 Models/
+            │   └── Session.cs            # Session entity (with TTL)
+            └── 📁 Dtos/
+                ├── CreateSessionDto.cs
+                └── SessionRequestDto.cs
 ```
 
 ### Folder Explanations
