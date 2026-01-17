@@ -9,7 +9,7 @@ namespace LearnASPDotNet.Features.Sessions.Repositories
         private readonly IMongoCollection<Session> _sessionsCollection;
         public SessionRepository(IMongoDatabase database)
         {
-            _sessionsCollection = database.GetCollection<Session>("Sessions");
+            _sessionsCollection = database.GetCollection<Session>("sessions");
             var indexKeys = Builders<Session>.IndexKeys.Ascending(session => session.ExpiresAt);
             var indexOptions = new CreateIndexOptions
             {
