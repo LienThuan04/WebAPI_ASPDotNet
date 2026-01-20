@@ -90,7 +90,7 @@ namespace LearnASPDotNet.Features.Auths
         [Authorize]
         public IActionResult GetProfile()
         {
-            var profile = HttpContext.GetCurrentUser();
+            var profile = HttpContext.GetCurrentUser(); // lấy thông tin user từ access token trong header request
             if (profile == null)
             {
                 return Unauthorized("User not found or User no login");

@@ -1,7 +1,7 @@
 ﻿
 public static class HttpContextExtensions
 {
-    public static JwtPayloadDto GetCurrentUser(this HttpContext context)
+    public static JwtPayloadDto GetCurrentUser(this HttpContext context)  // extension method get current user from HttpContext in JwtPayloadDto on headers request
     {
         var user = context.User;
 

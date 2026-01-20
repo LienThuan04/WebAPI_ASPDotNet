@@ -31,28 +31,24 @@ builder.Services.AddJwtAuthentication();
 
 builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
 
-builder.Services.AddAuthFeature();
+builder.Services.AddAuthFeature(); // Register Auth feature services
 builder.Services.AddUserFeature(); // Register User feature services
 builder.Services.AddSessionFeature(); // Register Session feature services
-builder.Services.AddFileFeature();
+builder.Services.AddFileFeature(); // Register File feature services
 
 
 var app = builder.Build(); // Build the application
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// If in development environment
+if (app.Environment.IsDevelopment()) 
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "LearnASPDotNet API V1"); //Document title 
-        options.ConfigObject.PersistAuthorization = true; // Persist authorization data
-    });
+    app.UseSwaggerConfig(); // Use Swagger configuration in Folder Extensions/Swaggers/SwaggerApplicationExtensions.cs
 }
 
 app.UseMiddleware<MiddlewareException>(); // Custom middleware to handle JWT errors
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Redirect HTTP requests to HTTPS
 
 app.UseAuthentication(); // Enable authentication middleware
 
@@ -60,4 +56,4 @@ app.UseAuthorization(); // Enable authorization middleware
 
 app.MapControllers(); // Map controller routes
 
-app.Run();
+app.Run(); // Run the application
