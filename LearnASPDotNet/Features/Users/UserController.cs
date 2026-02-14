@@ -72,6 +72,7 @@ namespace LearnASPDotNet.Features.Users
                 {
                     return NotFound("User not found");
                 }
+                //HttpContext.Items["MessageResponse"] = "User retrieved successfully"; // Đặt thông điệp thành công vào HttpContext.Items để ApiResponseWrapperFilter có thể sử dụng
                 return Ok(new
                 {
                     Message = "User retrieved successfully",

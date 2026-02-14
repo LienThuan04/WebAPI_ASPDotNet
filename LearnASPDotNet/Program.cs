@@ -8,6 +8,7 @@ using LearnASPDotNet.Features.Auths;
 using LearnASPDotNet.Features.Users;
 using LearnASPDotNet.Features.Sessions;
 using LearnASPDotNet.Features.Files;
+using LearnASPDotNet.Filters;
 
 // Create a builder for the web application
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 DotEnv.Load();
 
 // Add controller services
-builder.Services.AddControllers(); 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiResponseWrapperFilter>(); // Add a global filter to wrap API responses in a consistent format
+}); 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwagger(); // Add Swagger services in Folder Extensions/Swaggers/SwaggerServiceExtensions.cs
 
