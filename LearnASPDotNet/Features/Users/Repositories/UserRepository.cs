@@ -10,7 +10,7 @@ namespace LearnASPDotNet.Features.Users.Repositories
         // Constructor to initialize the MongoDB collection
         public UserRepository(IMongoDatabase database)
         {
-            _usersCollection = database.GetCollection<User>("users");
+            _usersCollection = database.GetCollection<User>("users"); // name collection in MongoDB
         }
 
         // Method to get a user by their ID
