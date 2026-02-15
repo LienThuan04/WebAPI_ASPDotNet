@@ -16,6 +16,10 @@ namespace LearnASPDotNet.Features.Users.Services
         {
             try
             {
+                if(await _userRepository.CheckExistEmailOrUsername(createUser.Email) || await _userRepository.CheckExistEmailOrUsername(createUser.Username))
+                {
+                    throw new Exception("Email or UserName is already in use by another user");
+                }
                 var user = new User
                 {
                     Username = createUser.Username,
@@ -65,6 +69,10 @@ namespace LearnASPDotNet.Features.Users.Services
 
         public async Task<UserResponseDto?> UpdateUserAsync(string UserId, UpdateUserDto updateUser)
         {
+            if (await _userRepository.CheckExistEmailOrUsername(updateUser.Email)) //check email đã tồn tại chưa
+            {
+                throw new Exception("Email or UserName is already in use by another user");
+            }
             var user = await _userRepository.UpdateUserAsync(UserId, updateUser);
             if (user == null)
             {

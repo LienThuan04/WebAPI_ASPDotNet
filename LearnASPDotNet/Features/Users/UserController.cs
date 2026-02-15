@@ -24,6 +24,7 @@ namespace LearnASPDotNet.Features.Users
             {
                 if (await _userService.CheckExistEmailOrUsername(createUser.Email) || await _userService.CheckExistEmailOrUsername(createUser.Username))
                 {
+                    HttpContext.Items["MessageResponse"] = "Email or UserName is already in use by another user";
                     return BadRequest("Email or UserName is already in use by another user");
                 }
                 await _userService.CreateUserAsync(createUser);
@@ -46,6 +47,7 @@ namespace LearnASPDotNet.Features.Users
                 var result = await _userService.FindAllUsersAsync();
                 if (result == null || !result.Any())
                 {
+                    HttpContext.Items["MessageResponse"] = "No users found";
                     return NotFound("No users found");
                 }
                 return Ok(new
@@ -70,6 +72,7 @@ namespace LearnASPDotNet.Features.Users
                 var user = await _userService.FindOneUserByIdAsync(id);
                 if (user == null)
                 {
+                    HttpContext.Items["MessageResponse"] = "User not found";
                     return NotFound("User not found");
                 }
                 //HttpContext.Items["MessageResponse"] = "User retrieved successfully"; // Đặt thông điệp thành công vào HttpContext.Items để ApiResponseWrapperFilter có thể sử dụng
@@ -91,19 +94,23 @@ namespace LearnASPDotNet.Features.Users
             {
                 if (await _userService.CheckExistEmailOrUsername(updateUser.Email))
                 {
+                    HttpContext.Items["MessageResponse"] = "Email is already in use by another user";
                     return BadRequest("Email is already in use by another user");
                 }
                 var result = await _userService.UpdateUserAsync(id, updateUser);
                 if (result == null)
                 {
+                    HttpContext.Items["MessageResponse"] = "User not found";
                     return NotFound("User not found");
                 }
                 var UpdatedUser = await _userService.UpdateUserAsync(id, updateUser);
                 if (UpdatedUser == null)
                 {
+                    HttpContext.Items["MessageResponse"] = "Failed to update user";
                     return BadRequest("Failed to update user");
                 }
                 // Implement update logic here
+                HttpContext.Items["MessageResponse"] = "User updated successfully";
                 return Ok(new
                 {
                     message = "User updated successfully",
@@ -112,6 +119,7 @@ namespace LearnASPDotNet.Features.Users
             }
             catch (Exception ex)
             {
+                HttpContext.Items["MessageResponse"] = "Error updating user: " + ex.Message;
                 return BadRequest(ex.Message);
             }
         }
@@ -124,12 +132,14 @@ namespace LearnASPDotNet.Features.Users
                 var userExists = await _userService.FindOneUserByIdAsync(id);
                 if (userExists == null)
                 {
+                    HttpContext.Items["MessageResponse"] = "User not found";
                     return NotFound("User not found");
                 }
                 var data = await _userService.DeleteUserAsync(id);
                 if (data == null)
                 {
-                    throw new Exception("Failed to delete user");
+                    HttpContext.Items["MessageResponse"] = "Failed to delete user";
+                    return BadRequest("Failed to delete user");
                 }
                 return Ok(new
                 {

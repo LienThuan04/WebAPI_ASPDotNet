@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using LearnASPDotNet.Features.Auths.Dtos.Attribute;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace LearnASPDotNet.Features.Auths.Dtos
@@ -7,7 +8,8 @@ namespace LearnASPDotNet.Features.Auths.Dtos
     {
         [Required]
         [DefaultValue("User")]
-        public string Username { get; set; } = string.Empty!;
+        [UsernameOrEmail] // Custom validation attribute to allow either username or email
+        public string UsernameOrEmail { get; set; } = string.Empty!;
 
         [Required]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]

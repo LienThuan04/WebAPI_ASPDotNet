@@ -30,6 +30,7 @@ namespace LearnASPDotNet.Features.Auths
         {
             if(await _userService.CheckExistEmailOrUsername(request.Email) || await _userService.CheckExistEmailOrUsername(request.Username))
             {
+                HttpContext.Items["MessageResponse"] = "Email or UserName is already in use by another user"; // Đặt thông điệp lỗi vào HttpContext.Items để ApiResponseWrapperFilter có thể sử dụng
                 return BadRequest("Email or UserName is already in use by another user");
             }
             var result = await _authService.RegisterAsync(request);
@@ -39,20 +40,28 @@ namespace LearnASPDotNet.Features.Auths
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            var result = await _authService.LoginAsync(request);
-            _jwtService.SetCookedToken(HttpContext, _refreshToken, result.RefreshToken);
-            var sessionDto = new CreateSessionDto
+            try
             {
-                UserId = result.User.UserId,
-                RefreshToken = result.RefreshToken
-            };
-            //  lưu refresh token vào DB table Sessions
-            await _sessionService.UpSertSessionAsync(sessionDto);
-            return Ok(new
+                var result = await _authService.LoginAsync(request);
+                _jwtService.SetCookedToken(HttpContext, _refreshToken, result.RefreshToken);
+                var sessionDto = new CreateSessionDto
+                {
+                    UserId = result.User.UserId,
+                    RefreshToken = result.RefreshToken
+                };
+                //  lưu refresh token vào DB table Sessions
+                await _sessionService.UpSertSessionAsync(sessionDto);
+                return Ok(new
+                {
+                    acesssToken = result.AccessToken,
+                    User = result.User
+                });
+            }
+            catch (Exception ex)
             {
-                acesssToken = result.AccessToken,
-                User = result.User
-            });
+                HttpContext.Items["MessageResponse"] = ex.Message; // Đặt thông điệp lỗi vào HttpContext.Items để ApiResponseWrapperFilter có thể sử dụng
+                return Unauthorized(ex.Message);
+            }
         }
 
 
@@ -65,7 +74,8 @@ namespace LearnASPDotNet.Features.Auths
                 var refreshToken = Request.Cookies[_refreshToken];
                 if (string.IsNullOrEmpty(refreshToken))
                 {
-                    return Unauthorized("Missing refresh token");
+                    HttpContext.Items["MessageResponse"] = "You are not logged in, or your refresh token has expired.";
+                    return Unauthorized("You are not logged in, or your refresh token has expired.");
                 }
                 var result = await _authService.RefreshTokenAsync(refreshToken);
                 // Cập nhật cookie refresh token
@@ -82,6 +92,7 @@ namespace LearnASPDotNet.Features.Auths
             }
             catch (Exception ex)
             {
+                HttpContext.Items["MessageResponse"] = ex.Message;
                 return Unauthorized(ex.Message);
             }
         }   
@@ -93,6 +104,7 @@ namespace LearnASPDotNet.Features.Auths
             var profile = HttpContext.GetCurrentUser(); // lấy thông tin user từ access token trong header request
             if (profile == null)
             {
+                HttpContext.Items["MessageResponse"] = "User not found or User no login";
                 return Unauthorized("User not found or User no login");
             }
             return Ok(profile);
@@ -105,6 +117,7 @@ namespace LearnASPDotNet.Features.Auths
             var refreshToken = Request.Cookies[_refreshToken];
             if (string.IsNullOrEmpty(refreshToken))
             {
+                HttpContext.Items["MessageResponse"] = "Missing refresh token or no login session yet.";
                 return BadRequest("Missing refresh token or no login session yet.");
             }
             var result = await _authService.LogoutAsync(refreshToken);
@@ -117,7 +130,8 @@ namespace LearnASPDotNet.Features.Auths
             var resultDelete = await _sessionService.DeleteSessionByRefreshToken(sessionRequestDto);
             if (!resultDelete)
             {
-                return BadRequest("Logout failed. Session not found.");
+                HttpContext.Items["MessageResponse"] = "Logout failed. Session not found.";
+                return Unauthorized("Logout failed. Session not found.");
             }
             return Ok(new { result.Message});
         }

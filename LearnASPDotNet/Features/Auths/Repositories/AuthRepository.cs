@@ -12,9 +12,12 @@ namespace LearnASPDotNet.Features.Auths.Repositories
             _usersCollection = database.GetCollection<User>("users");
         }
 
-        public async Task<User?> GetUserByUsernameAsync(string username)
+        public async Task<User?> GetUserByUsernameOrEmailAsync(string usernameOrEmail) // find user by username or email
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Username, username);
+            var filter = Builders<User>.Filter.Or(
+                    Builders<User>.Filter.Eq(u => u.Username, usernameOrEmail),
+                    Builders<User>.Filter.Eq(u => u.Email, usernameOrEmail)
+                );
             return await _usersCollection.Find(filter).FirstOrDefaultAsync();
         }
         public async Task CreateUserAsync(User user)

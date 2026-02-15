@@ -4,7 +4,7 @@ namespace LearnASPDotNet.Features.Auths.Repositories
 {
     public interface IAuthRepository
     {
-        Task<User?> GetUserByUsernameAsync(string username);
+        Task<User?> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
         Task CreateUserAsync(User user);
         Task<User?> GetUserByIdAsync(string email);
     }

@@ -36,10 +36,10 @@ namespace LearnASPDotNet.Features.Auths.Services
 
         public async Task<AuthResponseDto.LoginResponse> LoginAsync(LoginRequestDto request)
         {
-            var user = await _authRepository.GetUserByUsernameAsync(request.Username);
+            var user = await _authRepository.GetUserByUsernameOrEmailAsync(request.UsernameOrEmail);
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                throw new Exception("Invalid username or password.");
+                throw new BadHttpRequestException("Invalid username,email or password.");
             }
             var payload = new JwtPayloadDto
             {
