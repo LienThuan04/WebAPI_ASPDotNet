@@ -6,7 +6,7 @@ using LearnASPDotNet.Features.Users.Services;
 namespace LearnASPDotNet.Features.Users
 {
     [ApiController]
-    [Route("user")]
+    [Route("api/user")]
     [Authorize]
     public class UserController : Controller
     {
