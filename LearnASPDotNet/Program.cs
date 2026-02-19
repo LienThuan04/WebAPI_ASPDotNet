@@ -9,12 +9,17 @@ using LearnASPDotNet.Features.Users;
 using LearnASPDotNet.Features.Sessions;
 using LearnASPDotNet.Features.Files;
 using LearnASPDotNet.Filters;
+using LearnASPDotNet.Settings;
+
+//configure dotenv to load env variables from .env file
+DotEnv.Load();
 
 // Create a builder for the web application
 var builder = WebApplication.CreateBuilder(args);
 
-//configure dotenv to load env variables from .env file
-DotEnv.Load();
+// Config settings Cors
+builder.Services.AddAppCors();
+
 
 // Add controller services
 builder.Services.AddControllers(options =>

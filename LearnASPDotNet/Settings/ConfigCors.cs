@@ -1,0 +1,24 @@
+﻿namespace LearnASPDotNet.Settings
+{
+    public static class ConfigCors
+    {
+        public const string PolicyName = "CorsPolicy"; // Define a constant for the CORS policy name to be used when applying the policy to controllers or endpoints
+
+        public static IServiceCollection AddAppCors(this IServiceCollection services) //extension method to add CORS configuration to the service collection, allowing for method chaining in the Program.cs file with type (IServiceCollection)
+        {
+            var raw = Environment.GetEnvironmentVariable("CORS_ALLOWED_ORIGINS") ?? "*"; // Get allowed origins from environment variable, default to "*" if not set
+
+            var origins = raw.Split(',').Select(o => o.Trim()).ToArray(); // Split the string into an array of origins
+            services.AddCors(options => // Add CORS policy to allow specified origins, methods, and headers
+            {
+                options.AddPolicy(PolicyName, builder => // Define a CORS policy with the specified name
+                {
+                    builder.AllowAnyOrigin() // Allow any origin to access the API. You can replace this with .WithOrigins(origins) to restrict to specific origins.
+                           .AllowAnyMethod() // Allow any HTTP method (GET, POST, PUT, DELETE, etc.)
+                           .AllowAnyHeader(); // Allow any HTTP header in the request. This is useful for allowing custom headers or authentication headers.
+                });
+            });
+            return services; // Return the modified IServiceCollection to allow for method chaining
+        }
+    }
+}
