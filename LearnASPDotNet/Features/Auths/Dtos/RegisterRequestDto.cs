@@ -21,10 +21,10 @@ namespace LearnASPDotNet.Features.Auths.Dtos
         [DefaultValue("123456")]
         public string Password { get; set; } = string.Empty!;
 
-        [DefaultValue("0xxxxxxxxx")]
+        [DefaultValue("")]
         [MaxLength(10, ErrorMessage = "Phone number cannot exceed 10 characters.")]
         public string? Phone { get; set; }
-        [DefaultValue("123 Main St, City, Country")]
+        [DefaultValue("")]
         [MaxLength(200, ErrorMessage = "Address cannot exceed 200 characters.")]
         public string? Address { get; set; }
     }
