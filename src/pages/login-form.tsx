@@ -14,11 +14,34 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { callLogin } from "@/lib/api"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const emailOrUsername = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    // Call the login API with emailOrUsername and password
+    if (emailOrUsername && password) {
+      await callLogin(emailOrUsername, password)
+        .then((response) => {
+          // Handle successful login, e.g., store token, redirect, etc.
+          console.log("Login successful:", response.data);
+        })
+        .catch((error) => {
+          // Handle login error, e.g., show error message
+          console.error("Login failed:", error);
+        });
+    } else {
+      console.error("Email/Username and password are required.");
+    }
+  };
+
   return (
     <div className="flex items-center justify-center h-screen w-full">
       <div className={cn("flex flex-col gap-6 w-100 h-100", className)} {...props}>
@@ -26,18 +49,19 @@ export function LoginForm({
           <CardHeader>
             <CardTitle>Login to your account</CardTitle>
             <CardDescription>
-              Enter your email below to login to your account
+              Enter your username or email below to login to your account
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={handleSubmit}>
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="email">Email</FieldLabel>
+                  <FieldLabel htmlFor="email">UserName Or Email</FieldLabel>
                   <Input
                     id="email"
-                    type="email"
-                    placeholder="m@example.com"
+                    name="email"
+                    type="text"
+                    placeholder="m@example.com or username"
                     required
                   />
                 </Field>
@@ -51,7 +75,7 @@ export function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input id="password" name="password" type="password"  required />
                 </Field>
                 <Field>
                   <Button type="submit">Login</Button>
@@ -59,7 +83,7 @@ export function LoginForm({
                     Login with Google
                   </Button>
                   <FieldDescription className="text-center">
-                    Don&apos;t have an account? <a href="#">Sign up</a>
+                    Don&apos;t have an account? <a href="/register">Sign up</a>
                   </FieldDescription>
                 </Field>
               </FieldGroup>
