@@ -59,6 +59,8 @@ app.UseMiddleware<MiddlewareException>(); // Custom middleware to handle JWT err
 
 app.UseHttpsRedirection(); // Redirect HTTP requests to HTTPS
 
+app.UseCors(); // Enable CORS middleware with the configured policy
+
 app.UseAuthentication(); // Enable authentication middleware
 
 app.UseAuthorization(); // Enable authorization middleware

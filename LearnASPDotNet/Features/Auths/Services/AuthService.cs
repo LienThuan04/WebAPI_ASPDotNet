@@ -37,9 +37,14 @@ namespace LearnASPDotNet.Features.Auths.Services
         public async Task<AuthResponseDto.LoginResponse> LoginAsync(LoginRequestDto request)
         {
             var user = await _authRepository.GetUserByUsernameOrEmailAsync(request.UsernameOrEmail);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            if (user == null )
+            {
+                throw new BadHttpRequestException("The account or password does not exist.");
+            }
+            else if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
                 throw new BadHttpRequestException("Invalid username,email or password.");
+
             }
             var payload = new JwtPayloadDto
             {
