@@ -86,6 +86,7 @@ WebAPI_ASPDotNet/
     │   └── ValidationFilter.cs           # Request validation filter
     │
     ├── 📁 Settings/
+    │   ├── ConfigCors.cs                 # CORS configuration
     │   └── MongoDbSettings.cs            # MongoDB settings model
     │
     └── 📁 Features/                      # Feature-based organization
@@ -248,6 +249,7 @@ WebAPI_ASPDotNet/
     │   └── ValidationFilter.cs           # Request validation filter
     │
     ├── 📁 Settings/
+    │   ├── ConfigCors.cs                 # CORS configuration
     │   └── MongoDbSettings.cs            # MongoDB settings model
     │
     └── 📁 Features/                      # Feature-based organization
