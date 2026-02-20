@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { callLogin } from "@/lib/api"
+import { toast } from "sonner"
 
 export function LoginForm({
   className,
@@ -31,13 +32,16 @@ export function LoginForm({
       await callLogin(emailOrUsername, password)
         .then((response) => {
           // Handle successful login, e.g., store token, redirect, etc.
+          toast.success("Login successful!");
           console.log("Login successful:", response.data);
         })
         .catch((error) => {
           // Handle login error, e.g., show error message
-          console.error("Login failed:", error);
+          toast.error("Login failed. "+ (error?.response?.data?.errors?.Password || error?.response?.data?.message || "Please try again."));
+          // console.log("Login failed:", error.response || error);
         });
     } else {
+      toast.error("Email/Username and password are required.");
       console.error("Email/Username and password are required.");
     }
   };
