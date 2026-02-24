@@ -16,11 +16,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { callLogin } from "@/lib/api"
 import { toast } from "sonner"
+import { useNavigate } from "react-router-dom";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,6 +37,8 @@ export function LoginForm({
           // Handle successful login, e.g., store token, redirect, etc.
           toast.success("Login successful!");
           console.log("Login successful:", response.data);
+          // After successful login navigate to dashboard
+          navigate('/dashboard');
         })
         .catch((error) => {
           // Handle login error, e.g., show error message
